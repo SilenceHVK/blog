@@ -1,0 +1,91 @@
+version: '3.1'
+
+services:
+  namesrv-1:
+    image: hvkcoder/rocketmq:4.6.1
+    container_name: rocketmq-namesrv-1
+    ports:
+      - 9876:9876
+    volumes:
+      - $HOME/Docker/rocketmq/namesrv-1/logs:/root/logs
+    command: sh mqnamesrv
+
+  namesrv-2:
+    image: hvkcoder/rocketmq:4.6.1
+    container_name: rocketmq-namesrv-2
+    ports:
+      - 9877:9876
+    volumes:
+      - $HOME/Docker/rocketmq/namesrv-2/logs:/root/logs
+    command: sh mqnamesrv
+
+  broker-a-m:
+    image: hvkcoder/rocketmq:4.6.1
+    container_name: rocketmq-broker-a-m
+    ports:
+      - 10911:10911
+    volumes:
+      - $HOME/Docker/rocketmq/broker-a/master/logs:/root/logs
+      - $HOME/Docker/rocketmq/broker-a/master/store:/root/store
+      - $HOME/Docker/rocketmq/broker-a/master/broker.conf:/opt/rocketmq-4.6.1/conf/broker.conf
+    environment:
+      TZ: Aisa/Shanghai
+      NAMESRV_ADDR: 'rocketmq-namesrv-1:9876;rocketmq-namesrv-2:9876'
+      JAVA_OPTS: ' -Duser.home=/opt'
+      JAVA_OPT_EXT: '-server -Xms256m -Xmx256m -Xmn256m'
+    command: sh mqbroker -c /opt/rocketmq-4.6.1/conf/broker.conf
+
+  broker-a-s:
+    image: hvkcoder/rocketmq:4.6.1
+    container_name: rocketmq-broker-a-s
+    ports:
+      - 10921:10921
+    volumes:
+      - $HOME/Docker/rocketmq/broker-a/slave/logs:/root/logs
+      - $HOME/Docker/rocketmq/broker-a/slave/store:/root/store
+      - $HOME/Docker/rocketmq/broker-a/slave/broker.conf:/opt/rocketmq-4.6.1/conf/broker.conf
+    environment:
+      TZ: Aisa/Shanghai
+      NAMESRV_ADDR: 'rocketmq-namesrv-1:9876;rocketmq-namesrv-2:9876'
+      JAVA_OPTS: ' -Duser.home=/opt'
+      JAVA_OPT_EXT: '-server -Xms256m -Xmx256m -Xmn256m'
+    command: sh mqbroker -c /opt/rocketmq-4.6.1/conf/broker.conf
+
+  broker-b-m:
+    image: hvkcoder/rocketmq:4.6.1
+    container_name: rocketmq-broker-b-m
+    ports:
+      - 10931:10931
+    volumes:
+      - $HOME/Docker/rocketmq/broker-b/master/logs:/root/logs
+      - $HOME/Docker/rocketmq/broker-b/master/store:/root/store
+      - $HOME/Docker/rocketmq/broker-b/master/broker.conf:/opt/rocketmq-4.6.1/conf/broker.conf
+    environment:
+      TZ: Aisa/Shanghai
+      NAMESRV_ADDR: 'rocketmq-namesrv-1:9876;rocketmq-namesrv-2:9876'
+      JAVA_OPTS: ' -Duser.home=/opt'
+      JAVA_OPT_EXT: '-server -Xms256m -Xmx256m -Xmn256m'
+    command: sh mqbroker -c /opt/rocketmq-4.6.1/conf/broker.conf
+
+  broker-b-s:
+    image: hvkcoder/rocketmq:4.6.1
+    container_name: rocketmq-broker-b-s
+    ports:
+      - 10941:10941
+    volumes:
+      - $HOME/Docker/rocketmq/broker-b/slave/logs:/root/logs
+      - $HOME/Docker/rocketmq/broker-b/slave/store:/root/store
+      - $HOME/Docker/rocketmq/broker-b/slave/broker.conf:/opt/rocketmq-4.6.1/conf/broker.conf
+    environment:
+      TZ: Aisa/Shanghai
+      NAMESRV_ADDR: 'rocketmq-namesrv-1:9876;rocketmq-namesrv-2:9876'
+      JAVA_OPTS: ' -Duser.home=/opt'
+      JAVA_OPT_EXT: '-server -Xms256m -Xmx256m -Xmn256m'
+    command: sh mqbroker -c /opt/rocketmq-4.6.1/conf/broker.conf
+
+  rocketmq-console:
+    image: hvkcoder/rocketmq-console:1.0.1
+    ports:
+      - 10908:8080
+    environment:
+      JAVA_OPTS: '-Drocketmq.config.namesrvAddr=rocketmq-namesrv-1:9876;rocketmq-namesrv-2:9876 -Dcom.rocketmq.sendMessageWithVIPChannel=false'
