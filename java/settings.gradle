@@ -1,2 +1,3 @@
 rootProject.name = 'java'
 include 'java-basic'
+include 'spring-cloud-eureka'
