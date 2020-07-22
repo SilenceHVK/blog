@@ -1,0 +1,22 @@
+server:
+  # 设置服务端口号
+  port: 8762
+
+########################
+# Eureka Server 配置
+########################
+eureka:
+  instance:
+    # eureka 服务主机名名称, 用于查找主机地址
+    hostname: eureka2
+  server:
+    # 关闭保护机制
+    enable-self-preservation: false
+  client:
+    # 是否向服务中心注册 默认 true
+    #    register-with-eureka: false
+    #    # 是否从注册中心检索服务 默认 true
+    #    fetch-registry: false
+    service-url:
+      # 注册中心地址
+      defaultZone: http://eureka1:8761/eureka/

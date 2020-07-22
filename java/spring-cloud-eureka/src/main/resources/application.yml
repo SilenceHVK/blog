@@ -1,26 +1,5 @@
-server:
-  # 设置服务端口号
-  port: 8761
-
 spring:
   application:
     name: EUREKA-SERVER
-
-########################
-# Eureka Server 配置
-########################
-eureka:
-  instance:
-    # eureka 服务实例名称
-    hostname: localhost
-  server:
-    # 关闭保护机制
-    enable-self-preservation: false
-  client:
-    # 是否向服务中心注册
-    register-with-eureka: true
-    # 是否从注册中心检索服务
-    fetch-registry: true
-    service-url:
-      # 注册中心地址
-      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+  profiles:
+    active: eureka2
