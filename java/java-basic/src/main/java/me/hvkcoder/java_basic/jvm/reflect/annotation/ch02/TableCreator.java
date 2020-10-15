@@ -31,24 +31,24 @@ public class TableCreator {
         // 记录主键
         List<String> primaryKeys = new ArrayList<>();
         Arrays.stream(fields).forEach(field -> {
-            TableField tableField = field.getAnnotation(TableField.class);
-            if (tableField == null || "".equals(tableField.value())) {
-                throw new RuntimeException("请指定数据表字段");
-            }
-            // 拼接字段SQL
-            sb.append("\t ").append(tableField.value()).append(" ").append(tableField.jdbcType().toString())
-                    .append("(").append(tableField.length()).append(")");
-            // 字段为空
-            if (!tableField.constraints().allowNull()) {
-                sb.append(" NOT NULL ");
-            }
-            sb.append(" COMMENT ").append("'").append(tableField.comment()).append("'")
-                    .append(",\n ");
-            // 字段为主键
-            if (tableField.constraints().primaryKey()) {
-                primaryKeys.add(tableField.value());
-            }
-        });
+					TableField tableField = field.getAnnotation(TableField.class);
+					if (tableField == null || "".equals(tableField.value())) {
+						throw new RuntimeException("请指定数据表字段");
+					}
+					// 拼接字段SQL
+					sb.append("\t ").append(tableField.value()).append(" ").append(tableField.jdbcType().toString())
+						.append("(").append(tableField.length()).append(")");
+					// 字段为空
+					if (!tableField.constraints().allowNull()) {
+						sb.append(" NOT NULL ");
+					}
+					sb.append(" COMMENT ").append("'").append(tableField.comment()).append("'")
+						.append(",\n ");
+					// 字段为主键
+					if (tableField.constraints().primaryKey()) {
+						primaryKeys.add(tableField.value());
+					}
+				});
 
         // 主键
         if (primaryKeys.size() > 0) {
