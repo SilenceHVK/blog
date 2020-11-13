@@ -13,13 +13,17 @@ subprojects {
 	}
 
 	dependencies {
-		testCompile group: 'junit', name: 'junit', version: '4.12'
+		implementation 'junit:junit:4.12'
 
 		// https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
-		compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
+		implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
 
 		// https://mvnrepository.com/artifact/org.projectlombok/lombok
-		compile group: 'org.projectlombok', name: 'lombok', version: '1.18.10'
+		implementation group: 'org.projectlombok', name: 'lombok', version: '1.18.10'
+
+		// 日志输出
+		implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.10'
+		implementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.0.13'
 	}
 }
 
