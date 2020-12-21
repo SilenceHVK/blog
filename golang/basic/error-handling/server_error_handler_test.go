@@ -1,4 +1,4 @@
-package errhandling
+package error_handling
 
 import (
 	"io/ioutil"
@@ -68,7 +68,7 @@ func fileListHandler(writer http.ResponseWriter, request *http.Request) error {
 		return userErr("path must start with " + PREFIX)
 	}
 
-	path := request.URL.Path[len("/list/"):]
+	path := request.URL.Path[len(PREFIX):]
 	file, err := os.Open(path)
 	defer file.Close()
 	if err != nil {

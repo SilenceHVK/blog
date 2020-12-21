@@ -1,4 +1,4 @@
-package errhandling
+package error_handling
 
 /*
 	defer 确保调用在函数结束时发生
