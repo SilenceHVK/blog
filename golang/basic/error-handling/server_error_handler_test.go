@@ -70,10 +70,11 @@ func fileListHandler(writer http.ResponseWriter, request *http.Request) error {
 
 	path := request.URL.Path[len(PREFIX):]
 	file, err := os.Open(path)
-	defer file.Close()
 	if err != nil {
 		return err
 	}
+	defer file.Close()
+
 	reader, err := ioutil.ReadAll(file)
 	if err != nil {
 		return err
