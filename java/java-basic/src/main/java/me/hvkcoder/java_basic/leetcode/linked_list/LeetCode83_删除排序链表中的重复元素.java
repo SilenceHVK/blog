@@ -1,7 +1,7 @@
 package me.hvkcoder.java_basic.leetcode.linked_list;
 
 /**
- * TODO: https://leetcode-cn.com/problems/remove-duplicates-from-sorted-list/
+ * https://leetcode-cn.com/problems/remove-duplicates-from-sorted-list/
  *
  * @author h-vk
  * @since 2020/11/17

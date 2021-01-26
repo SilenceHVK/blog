@@ -8,7 +8,7 @@ import io.netty.util.CharsetUtil;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * TODO: 客户端 I/O 事件处理
+ * 客户端 I/O 事件处理
  *
  * <p>ChannelHandler.Sharable: 表示一个 Channel Handler 可以被多个 Channel 安全共享
  *

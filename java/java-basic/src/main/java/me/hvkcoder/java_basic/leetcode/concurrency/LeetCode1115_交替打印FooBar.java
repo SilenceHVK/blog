@@ -3,7 +3,7 @@ package me.hvkcoder.java_basic.leetcode.concurrency;
 import java.util.concurrent.Semaphore;
 
 /**
- * TODO: https://leetcode-cn.com/problems/print-foobar-alternately/
+ * https://leetcode-cn.com/problems/print-foobar-alternately/
  *
  * @author h-vk
  * @since 2020/11/18

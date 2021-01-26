@@ -5,8 +5,7 @@ import java.util.List;
 import java.util.Stack;
 
 /**
- * TODO: https://leetcode-cn.com/problems/binary-tree-inorder-traversal/
- * 二叉树中序遍历：左子树 ---> 根结点 ---> 右子树
+ * https://leetcode-cn.com/problems/binary-tree-inorder-traversal/ 二叉树中序遍历：左子树 ---> 根结点 ---> 右子树
  *
  * @author h-vk
  * @since 2020/11/20
@@ -19,10 +18,8 @@ public class LeetCode94_二叉树的中序遍历 {
 		System.out.println("中序非递归:" + inorderTraversal(treeNode));
 	}
 
-
 	/**
-	 * TODO:  中序非递归
-	 * 将左子树入栈，再取出放入结果，再遍历右子树
+	 * 中序非递归 将左子树入栈，再取出放入结果，再遍历右子树
 	 *
 	 * @param root
 	 * @return
@@ -45,7 +42,7 @@ public class LeetCode94_二叉树的中序遍历 {
 	}
 
 	/**
-	 * TODO: 中序递归
+	 * 中序递归
 	 *
 	 * @param root
 	 * @return
@@ -64,7 +61,6 @@ public class LeetCode94_二叉树的中序遍历 {
 		list.add(root.val);
 		inorderTraversal(root.right, list);
 	}
-
 
 	private static class TreeNode {
 		int val;

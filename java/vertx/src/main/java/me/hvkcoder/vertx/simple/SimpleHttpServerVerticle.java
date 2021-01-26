@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * TODO: Vertx 实现 Http服务
+ * Vertx 实现 Http服务
  *
  * <p>在 Vert.x 中一切皆是 Verticle，每个 Verticle 都是独立的单元，每个 Verticle 都需要通过 deployVerticle 方法部署
  *

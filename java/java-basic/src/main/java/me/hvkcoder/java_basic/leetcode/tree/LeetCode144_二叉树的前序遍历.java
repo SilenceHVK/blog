@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Stack;
 
 /**
- * TODO: https://leetcode-cn.com/problems/binary-tree-preorder-traversal/
+ * https://leetcode-cn.com/problems/binary-tree-preorder-traversal/
  * 二叉树前序遍历：根结点 ---> 左子树 ---> 右子树
  *
  * @author h-vk
@@ -20,7 +20,7 @@ public class LeetCode144_二叉树的前序遍历 {
 	}
 
 	/**
-	 * TODO: 前序非递归
+	 * 前序非递归
 	 * 将右子树入栈，并添加根节点值，再取左子树
 	 *
 	 * @param root
@@ -45,7 +45,7 @@ public class LeetCode144_二叉树的前序遍历 {
 	}
 
 	/**
-	 * TODO: 前序递归
+	 * 前序递归
 	 *
 	 * @param root
 	 * @return

@@ -34,7 +34,7 @@ public class _ArrayList<E> extends _AbstractList<E> {
 	}
 
 	/**
-	 * TODO: 清空集合
+	 * 清空集合
 	 */
 	@Override
 	public void clear() {
@@ -45,7 +45,7 @@ public class _ArrayList<E> extends _AbstractList<E> {
 	}
 
 	/**
-	 * TODO: 添加元素到集合的指定位置
+	 * 添加元素到集合的指定位置
 	 *
 	 * @param index
 	 * @param element
@@ -63,7 +63,7 @@ public class _ArrayList<E> extends _AbstractList<E> {
 	}
 
 	/**
-	 * TODO: 获取指定位置的元素值
+	 *  获取指定位置的元素值
 	 *
 	 * @param index
 	 * @return 获取 index 的元素值
@@ -75,7 +75,7 @@ public class _ArrayList<E> extends _AbstractList<E> {
 	}
 
 	/**
-	 * TODO: 更改指定位置的元素值
+	 * 更改指定位置的元素值
 	 *
 	 * @param index
 	 * @param element
@@ -90,7 +90,7 @@ public class _ArrayList<E> extends _AbstractList<E> {
 	}
 
 	/**
-	 * TODO: 删除指定位置的元素
+	 * 删除指定位置的元素
 	 *
 	 * @param index
 	 * @return 删除的元素值
@@ -125,14 +125,14 @@ public class _ArrayList<E> extends _AbstractList<E> {
 	}
 
 	/**
-	 * TODO: 数组扩容
+	 * 数组扩容
 	 */
 	public void grow() {
 		grow(this.size + 1);
 	}
 
 	/**
-	 * TODO: 数组扩容
+	 * 数组扩容
 	 *
 	 * @param capacity
 	 */

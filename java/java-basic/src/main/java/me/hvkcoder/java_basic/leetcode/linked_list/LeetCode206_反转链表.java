@@ -1,7 +1,7 @@
 package me.hvkcoder.java_basic.leetcode.linked_list;
 
 /**
- * TODO:https://leetcode-cn.com/problems/reverse-linked-list/
+ * https://leetcode-cn.com/problems/reverse-linked-list/
  *
  * @author h-vk
  * @since 2020/11/17
@@ -24,8 +24,7 @@ public class LeetCode206_反转链表 {
 	}
 
 	/**
-	 * 非递归的方式
-	 * 将 next 指向上一个节点的引用地址
+	 * 非递归的方式 将 next 指向上一个节点的引用地址
 	 *
 	 * @param head
 	 * @return

@@ -1,3 +1,4 @@
 dependencies {
 	implementation 'io.vertx:vertx-web:4.0.0'
+	implementation 'io.vertx:vertx-mysql-client:4.0.0'
 }

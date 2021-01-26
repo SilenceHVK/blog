@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Stack;
 
 /**
- * TODO: https://leetcode-cn.com/problems/binary-tree-postorder-traversal/
+ * https://leetcode-cn.com/problems/binary-tree-postorder-traversal/
  * 二叉树后序遍历：左子树 ---> 右子树 ---> 根结点
  *
  * @author h-vk
@@ -19,7 +19,7 @@ public class LeetCode145_二叉树的后序遍历 {
 	}
 
 	/**
-	 * TODO: 后序递归
+	 * 后序递归
 	 *
 	 * @param root
 	 * @return
@@ -40,7 +40,7 @@ public class LeetCode145_二叉树的后序遍历 {
 	}
 
 	/**
-	 * TODO: 后序非递归
+	 * 后序非递归
 	 * 左子树入栈，取出栈中节点，判断是否右子树为null或右子树是否与当它的当前节点相同，
 	 * 如果是：记录节点值，并记录当前值的节点
 	 * 如果不是：将取出的节点重新入栈，并将节点设置其右子树，重新遍历

@@ -6,16 +6,16 @@ package me.hvkcoder.java_basic.data_struct.base;
  */
 public interface _Iterator<E> {
 	/**
-	 * TODO: 是否包含下一个元素
-	 *
-	 * @return
-	 */
+     * 是否包含下一个元素
+     *
+     * @return
+     */
 	boolean hasNext();
 
-	/**
-	 * TODO: 获取元素
-	 *
-	 * @return
+    /**
+     *  获取元素
+     *
+     * @return
 	 */
 	E next();
 

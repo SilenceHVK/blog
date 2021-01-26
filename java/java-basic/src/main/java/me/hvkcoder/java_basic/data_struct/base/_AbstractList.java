@@ -17,7 +17,7 @@ public abstract class _AbstractList<E> implements _List<E> {
 
 
 	/**
-	 * TODO: 获取当前 size
+	 * 获取当前 size
 	 *
 	 * @return size
 	 */
@@ -27,7 +27,7 @@ public abstract class _AbstractList<E> implements _List<E> {
 	}
 
 	/**
-	 * TODO: 集合是否为空
+	 *  集合是否为空
 	 *
 	 * @return
 	 */
@@ -37,7 +37,7 @@ public abstract class _AbstractList<E> implements _List<E> {
 	}
 
 	/**
-	 * TODO: 是否包含该元素
+	 *  是否包含该元素
 	 *
 	 * @param element
 	 * @return
@@ -48,7 +48,7 @@ public abstract class _AbstractList<E> implements _List<E> {
 	}
 
 	/**
-	 * TODO: 查询指定元素位置
+	 *  查询指定元素位置
 	 *
 	 * @param element
 	 * @return 元素索引
@@ -78,7 +78,7 @@ public abstract class _AbstractList<E> implements _List<E> {
 	}
 
 	/**
-	 * TODO: 添加元素至线性表末尾
+	 *  添加元素至线性表末尾
 	 *
 	 * @param element
 	 */
@@ -88,7 +88,7 @@ public abstract class _AbstractList<E> implements _List<E> {
 	}
 
 	/**
-	 * TODO: 判断数组是否越界
+	 *  判断数组是否越界
 	 *
 	 * @param index
 	 */
@@ -99,7 +99,7 @@ public abstract class _AbstractList<E> implements _List<E> {
 	}
 
 	/**
-	 * TODO: 添加时 判断数组是否越界
+	 *  添加时 判断数组是否越界
 	 *
 	 * @param index
 	 */
@@ -111,7 +111,7 @@ public abstract class _AbstractList<E> implements _List<E> {
 
 
 	/**
-	 * TODO: 创建迭代器
+	 *  创建迭代器
 	 *
 	 * @return
 	 */
@@ -120,7 +120,7 @@ public abstract class _AbstractList<E> implements _List<E> {
 	}
 
 	/**
-	 * TODO: 迭代器内部类
+	 *  迭代器内部类
 	 */
 	private class Itr implements _Iterator<E> {
 		/**

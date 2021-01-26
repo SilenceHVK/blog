@@ -4,7 +4,7 @@ import java.util.concurrent.Semaphore;
 import java.util.function.IntConsumer;
 
 /**
- * TODO: https://leetcode-cn.com/problems/print-zero-even-odd/
+ * https://leetcode-cn.com/problems/print-zero-even-odd/
  *
  * @author h-vk
  * @since 2020/11/18

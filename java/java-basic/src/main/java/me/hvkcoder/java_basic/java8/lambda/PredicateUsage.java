@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.function.Predicate;
 
 /**
- * TODO: java.util.function.Predicate<T> 接口定义了一个 test 方法，接收一个泛型对象 T，并返回一个 boolean
+ * java.util.function.Predicate<T> 接口定义了一个 test 方法，接收一个泛型对象 T，并返回一个 boolean
  *
  * <p>在需要表示一个涉及类型 T 的 boolean 表达式时，就可以使用该接口
  *

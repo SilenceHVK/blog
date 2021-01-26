@@ -17,6 +17,7 @@ subprojects {
 
 		// https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
 		implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
+		implementation group: 'cn.hutool', name: 'hutool-all', version: '5.3.10'
 
 		// https://mvnrepository.com/artifact/org.projectlombok/lombok
 		implementation group: 'org.projectlombok', name: 'lombok', version: '1.18.10'

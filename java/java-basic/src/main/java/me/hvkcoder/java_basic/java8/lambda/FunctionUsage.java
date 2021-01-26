@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.function.Function;
 
 /**
- * TODO: java.util.function.Function<T, R> 接口定义了一个 apply 方法，它接受一个泛型 T 对象，并返回一个泛型 R 的对象
+ * java.util.function.Function<T, R> 接口定义了一个 apply 方法，它接受一个泛型 T 对象，并返回一个泛型 R 的对象
  *
  * <p>如果需要定义一个 Lambda ，将输入对象的信息映射到输出，就可以使用该接口
  *

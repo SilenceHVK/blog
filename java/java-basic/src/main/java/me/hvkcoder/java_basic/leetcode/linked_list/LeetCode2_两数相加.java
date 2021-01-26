@@ -1,7 +1,7 @@
 package me.hvkcoder.java_basic.leetcode.linked_list;
 
 /**
- * TODO: https://leetcode-cn.com/problems/add-two-numbers/
+ * https://leetcode-cn.com/problems/add-two-numbers/
  *
  * @author h-vk
  * @since 2020/11/17
@@ -53,7 +53,6 @@ public class LeetCode2_两数相加 {
 		return sentinel.next;
 	}
 
-
 	public static class ListNode {
 		int val;
 		ListNode next;
@@ -70,5 +69,4 @@ public class LeetCode2_两数相加 {
 			this.next = next;
 		}
 	}
-
 }
