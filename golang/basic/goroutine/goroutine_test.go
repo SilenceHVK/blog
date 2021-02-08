@@ -2,6 +2,7 @@ package goroutine
 
 import (
 	"context"
+	"runtime"
 	"sync"
 	"testing"
 )
@@ -53,5 +54,41 @@ func TestCancelGoroutine(t *testing.T) {
 			}
 		}
 	}(ctx)
+	wg.Wait()
+}
+
+/*
+	runtime.Gosched() 用于让出 CPU 时间片，让出当前 goroutine 的执行权限
+	调度器安排其他等待的任务运行，并在下次某个时候从该位置恢复运行，与 Java 中的 yield 类似
+*/
+func TestRuntimeGosched(t *testing.T) {
+	go func() {
+		for i := 0; i < 1000; i++ {
+			t.Log("子协程执行-> ", i)
+		}
+	}()
+
+	for i := 0; i < 1000; i++ {
+		runtime.Gosched()
+		t.Log("主协程执行-> ", i)
+	}
+}
+
+/*
+	runtime.Goexit() 立即终止当前 goroutine 执行
+*/
+func TestRuntimeGoexit(t *testing.T) {
+	var wg sync.WaitGroup
+	wg.Add(1)
+	go func() {
+		defer t.Log("A defer")
+		func() {
+			defer wg.Done()
+			defer t.Log("B defer")
+			runtime.Goexit()
+			t.Log("B.....")
+		}()
+		t.Log("A......")
+	}()
 	wg.Wait()
 }
