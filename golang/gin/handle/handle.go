@@ -60,3 +60,9 @@ func BindStruct(context *gin.Context) {
 		context.String(http.StatusBadRequest, "%v", err)
 	}
 }
+
+func RenderTemplate(context *gin.Context) {
+	context.HTML(http.StatusOK, "index.html", gin.H{
+		"title": "Render Template",
+	})
+}

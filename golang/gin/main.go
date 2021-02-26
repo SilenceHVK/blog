@@ -2,7 +2,6 @@ package main
 
 import (
 	"github.com/SilenceHVK/blog/golang/gin/handle"
-	"github.com/SilenceHVK/blog/golang/gin/middleware"
 	"github.com/gin-gonic/gin"
 )
 
@@ -20,7 +19,7 @@ func main() {
 	r.Use(gin.Logger(), gin.Recovery())
 
 	// 使用自定会中间件
-	r.Use(middleware.IPAuthMiddleware())
+	//r.Use(middleware.IPAuthMiddleware())
 
 	// 将自定义验证注册到 Validator 上
 	//if validator, ok := binding.Validator.Engine().(*validator.Validate); ok {
@@ -31,6 +30,10 @@ func main() {
 	r.Static("/static", "./static")
 	//r.StaticFS("/static", http.Dir("static"))
 	//r.StaticFile("/index.html", "/static/index.html") // 设置单个文件
+
+	// 加载模板文件路径
+	r.LoadHTMLGlob("template/*")
+	r.GET("/index", handle.RenderTemplate)
 
 	// 设置 GET 请求路由
 	r.GET("/ping", handle.Get)
@@ -58,5 +61,4 @@ func main() {
 
 	// 服务端监听端口
 	r.Run(":8080")
-
 }
