@@ -1,0 +1,26 @@
+buildscript {
+	ext {
+		springBootVersion = '2.3.0.RELEASE'
+		springCloudVersion = 'Hoxton.SR4'
+		springCloudAlibabaVersion = '2.2.1.RELEASE'
+	}
+}
+
+plugins {
+	id "io.spring.dependency-management" version "1.0.11.RELEASE"
+}
+
+
+subprojects {
+	apply plugin: 'java'
+	apply plugin: 'maven-publish'
+	apply plugin: 'io.spring.dependency-management'
+
+	dependencyManagement {
+		imports {
+			mavenBom "org.springframework.boot:spring-boot-dependencies:${springBootVersion}"
+			mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+			mavenBom "com.alibaba.cloud:spring-cloud-alibaba-dependencies:${springCloudAlibabaVersion}"
+		}
+	}
+}
