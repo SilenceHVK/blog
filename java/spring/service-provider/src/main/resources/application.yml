@@ -12,3 +12,21 @@ eureka:
   client:
     service-url:
       defaultZone: http://eureka1:8761/eureka,http://eureka2:8762/eureka
+    # 开启上报服务真实状态
+    healthcheck:
+      enabled: true
+
+
+########################
+# Actuator 设置
+########################
+management:
+  endpoints:
+    web:
+      exposure:
+        # 开启所有端点
+        include: '*'
+  endpoint:
+    # 启用 shutdown 远程关闭服务
+    shutdown:
+      enabled: true

@@ -19,4 +19,4 @@ eureka:
 #    fetch-registry: false
     service-url:
       # 注册中心地址
-      defaultZone: http://eureka2:8762/eureka/
+      defaultZone: http://eureka1:8761/eureka/

@@ -2,6 +2,7 @@ package me.hvkcoder.spring.service.consumer;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestTemplate;
 
@@ -16,7 +17,13 @@ public class ServiceConsumerApplication {
 	}
 
 	@Bean
-	public RestTemplate restTemplate(){
+	public RestTemplate restTemplate() {
+		return new RestTemplate();
+	}
+
+	@Bean
+	@LoadBalanced // 使 RestTemplate 具有负载均衡功能
+	public RestTemplate loadBalancer() {
 		return new RestTemplate();
 	}
 }
