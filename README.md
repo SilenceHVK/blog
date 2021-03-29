@@ -41,3 +41,4 @@
 - [【Tools】MacOS 环境搭建](https://github.com/SilenceHVK/articles/issues/59)
 - [【Tools】Nginx 入门到实践](https://github.com/SilenceHVK/articles/issues/61)
 - [【Tools】阿里云-香港服务器利用 Docker 搭建 SS 代理](https://github.com/SilenceHVK/articles/issues/64)
+- [【Tools】Supervisor](https://github.com/SilenceHVK/articles/issues/70)
