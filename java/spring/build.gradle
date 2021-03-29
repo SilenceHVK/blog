@@ -23,4 +23,8 @@ subprojects {
 			mavenBom "com.alibaba.cloud:spring-cloud-alibaba-dependencies:${springCloudAlibabaVersion}"
 		}
 	}
+
+	dependencies {
+		implementation 'org.springframework.boot:spring-boot-starter-web'
+	}
 }
