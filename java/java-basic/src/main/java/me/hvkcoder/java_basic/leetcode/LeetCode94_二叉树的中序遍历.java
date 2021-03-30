@@ -1,4 +1,4 @@
-package me.hvkcoder.java_basic.leetcode.tree;
+package me.hvkcoder.java_basic.leetcode;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package me.hvkcoder.java_basic.leetcode.array;
+package me.hvkcoder.java_basic.leetcode;
 
 /**
  * https://leetcode-cn.com/problems/search-insert-position/

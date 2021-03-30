@@ -1,4 +1,4 @@
-package me.hvkcoder.java_basic.leetcode.concurrency;
+package me.hvkcoder.java_basic.leetcode;
 
 import java.util.concurrent.Semaphore;
 import java.util.function.IntConsumer;

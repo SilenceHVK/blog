@@ -1,4 +1,4 @@
-package me.hvkcoder.java_basic.leetcode.string;
+package me.hvkcoder.java_basic.leetcode;
 
 import java.util.Stack;
 

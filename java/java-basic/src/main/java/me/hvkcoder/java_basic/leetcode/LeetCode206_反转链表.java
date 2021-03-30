@@ -1,4 +1,4 @@
-package me.hvkcoder.java_basic.leetcode.linked_list;
+package me.hvkcoder.java_basic.leetcode;
 
 /**
  * https://leetcode-cn.com/problems/reverse-linked-list/

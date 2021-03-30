@@ -1,4 +1,4 @@
-package me.hvkcoder.java_basic.leetcode.array;
+package me.hvkcoder.java_basic.leetcode;
 
 import java.util.Arrays;
 
