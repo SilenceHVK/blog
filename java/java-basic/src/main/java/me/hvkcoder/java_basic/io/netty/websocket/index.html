@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>WebSocket 测试</title>
+	<link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container" style="padding: 20px 0">
+
+	<ul class="list-group" id="message-container" style="margin: 10px 0;">
+	</ul>
+
+	<div class="input-group mb-3">
+		<input type="text" class="form-control" id="content" aria-describedby="button-addon2">
+		<div class="input-group-append">
+			<button class="btn btn-outline-secondary" type="button" id="send">发送</button>
+		</div>
+	</div>
+</div>
+<script>
+	window.onload = function () {
+		var $send = document.getElementById("send");
+		var $content = document.getElementById("content");
+		var $container = document.getElementById("message-container");
+
+		var ws = new WebSocket("ws://localhost:8888/ws");
+		ws.onopen = function () {
+			console.log("连接成功");
+		}
+		ws.onmessage = function (evt) {
+			$container.innerHTML += '<li class="list-group-item">'+ evt.data +'</li>' ;
+		}
+
+		$send.onclick = function () {
+			ws.send($content.value);
+			$content.value = '';
+		}
+	}
+</script>
+</body>
+</html>
