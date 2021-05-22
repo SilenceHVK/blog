@@ -6,4 +6,5 @@ include 'spring'
 include 'spring:spring-cloud-eureka'
 include 'spring:service-provider'
 include 'spring:service-consumer'
+include 'spring:spring-security'
 

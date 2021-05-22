@@ -1,0 +1,29 @@
+server:
+  port: 9100
+
+spring:
+  ########################
+  # Spring Security 配置
+  ########################
+  security:
+    ## 设置登录名和密码
+    user:
+      name: admin
+      password: 123456
+
+  ########################
+  # Spring 数据库 配置
+  ########################
+  datasource:
+    url: jdbc:mysql://k8s-180:30060/practice
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  ########################
+  # Spring JPA 配置
+  ########################
+  jpa:
+    generate-ddl: true
+    show-sql: true
+    database: mysql

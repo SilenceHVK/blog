@@ -3,6 +3,7 @@ buildscript {
 		springBootVersion = '2.3.0.RELEASE'
 		springCloudVersion = 'Hoxton.SR4'
 		springCloudAlibabaVersion = '2.2.1.RELEASE'
+		mysqlVersion = '8.0.25'
 	}
 }
 
