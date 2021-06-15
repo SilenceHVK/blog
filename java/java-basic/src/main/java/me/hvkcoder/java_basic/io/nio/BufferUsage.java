@@ -127,7 +127,7 @@ public class BufferUsage {
     log.info("flip 前 position = {}", allocate.position());
     log.info("flip 前 get = {}", allocate.get());
 
-    // flip 函数将填充状态的缓冲区翻转城一个准备读出元素的释放状态
+    // flip 函数将填充状态的缓冲区翻转成一个准备读出元素的释放状态
     // limit = position; position = 0 ; mark = -1;
     allocate.flip();
     log.info("flip 后 limit = {}", allocate.limit());
@@ -146,7 +146,7 @@ public class BufferUsage {
     }
 
     // clear 函数将缓冲区重置为空状态，它并不改变缓冲区内的任何元素，只是将 上界 设为 容量值
-		// position = 0; limit = capacity; mark = -1;
+    // position = 0; limit = capacity; mark = -1;
     allocate.clear();
   }
 }
