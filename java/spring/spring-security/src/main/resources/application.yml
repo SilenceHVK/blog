@@ -15,7 +15,7 @@ spring:
   # Spring 数据库 配置
   ########################
   datasource:
-    url: jdbc:mysql://k8s-180:30060/practice
+    url: jdbc:mysql://k8s-180:30060/db_security
     username: root
     password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver
