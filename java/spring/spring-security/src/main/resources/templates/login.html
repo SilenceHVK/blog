@@ -22,6 +22,10 @@
 		<form class="form" th:action="@{/authentication/form}" method="post" id="login-form">
 			<input type="text" name="username" class="form-field animation a3" placeholder="用户名">
 			<input type="password" name="password" class="form-field animation a4" placeholder="密码">
+			<div style="display: flex; align-items: center;" class="animation a5">
+				<input type="text" name="captcha" class="form-field" placeholder="验证码" style="width: 120px; margin-right: 19px;">
+				<img th:src="@{/captcha.png}" style="height: 50px; width: 150px; margin-top: 17px;">
+			</div>
 			<button class="animation a6">登录</button>
 		</form>
 	</div>
@@ -44,10 +48,10 @@
 				contentType: false,
 				processData: false,
 				success: res => {
-					$.growl.notice({ message: res.message });
+					$.growl.notice({message: res.message});
 				},
 				error: (req, textStatus, errorThrown) => {
-					$.growl.error({ message: req.responseJSON.message });
+					$.growl.error({message: req.responseJSON.message});
 				}
 			});
 			return false;

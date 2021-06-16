@@ -1,10 +1,15 @@
 package me.hvkcoder.spring_security.security;
 
+import com.google.code.kaptcha.Producer;
+import com.google.code.kaptcha.impl.DefaultKaptcha;
+import com.google.code.kaptcha.util.Config;
+import me.hvkcoder.spring_security.security.filter.VerificationCodeFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -15,9 +20,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * 自定义 Spring Security 配置
@@ -43,10 +51,31 @@ public class CustomSecurityConfig extends WebSecurityConfigurerAdapter {
     return new BCryptPasswordEncoder();
   }
 
+  /**
+   * 验证码生成类
+   *
+   * @return
+   */
+  @Bean
+  public Producer captcha() {
+    Properties properties = new Properties();
+    properties.setProperty("kaptcha.image.width", "150");
+    properties.setProperty("kaptcha.image.height", "50");
+    properties.setProperty("kaptcha.textproducer.char.string", "0123456789");
+    properties.setProperty("kaptcha.textproducer.char.length", "5");
+    DefaultKaptcha defaultKaptcha = new DefaultKaptcha();
+    defaultKaptcha.setConfig(new Config(properties));
+    return defaultKaptcha;
+  }
+
   @Override
   protected void configure(HttpSecurity http) throws Exception {
     http.authorizeRequests(
-            req -> req.antMatchers("/css/**", "/img/**").permitAll().anyRequest().authenticated())
+            req ->
+                req.antMatchers("/css/**", "/img/**", "/captcha.png")
+                    .permitAll()
+                    .anyRequest()
+                    .authenticated())
         .formLogin(
             formLogin ->
                 formLogin
@@ -60,7 +89,9 @@ public class CustomSecurityConfig extends WebSecurityConfigurerAdapter {
                     .successHandler(getAuthenticationSuccessHandler())
                     // 处理登录失败响应
                     .failureHandler(getAuthenticationFailureHandler())
-                    .permitAll());
+                    .permitAll())
+        // 在 UsernamePasswordAuthenticationFilter 之前添加自定义过滤器
+        .addFilterBefore(new VerificationCodeFilter(), UsernamePasswordAuthenticationFilter.class);
   }
 
   /**
