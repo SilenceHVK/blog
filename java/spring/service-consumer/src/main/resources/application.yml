@@ -2,8 +2,13 @@ server:
   port: 9010
 
 spring:
-  application:
-    name: SERVICE-CONSUMER
+  cloud:
+    nacos:
+      ########################
+      # Nacos 服务发现配置
+      ########################
+      discovery:
+        server-addr: 127.0.0.1:8848
 
 ########################
 # Eureka Client 配置

@@ -1,10 +1,16 @@
 server:
-  port: 9000
+  port: 9001
 
 spring:
   application:
     name: SERVICE-PROVIDER
-
+  cloud:
+    nacos:
+      ########################
+      # Nacos 服务发现配置
+      ########################
+      discovery:
+        server-addr: 127.0.0.1:8848
 ########################
 # Eureka Client 配置
 ########################

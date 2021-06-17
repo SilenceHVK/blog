@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @since 2021/3/18
  */
 @RestController
-@RequestMapping("/reset")
+@RequestMapping("/rest")
 public class RestTemplateController {
 	@Autowired
 	private DiscoveryClient discoveryClient;
