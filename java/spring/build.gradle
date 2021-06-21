@@ -26,6 +26,8 @@ subprojects {
 	}
 
 	dependencies {
-		implementation 'org.springframework.boot:spring-boot-starter-web'
+		if (!project.name.equals("spring-cloud-gateway")) {
+			implementation 'org.springframework.boot:spring-boot-starter-web'
+		}
 	}
 }

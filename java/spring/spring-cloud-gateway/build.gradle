@@ -1,0 +1,7 @@
+dependencies {
+	// Nacos 依赖
+	implementation 'com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-discovery'
+	// Gateway 依赖
+	implementation 'org.springframework.cloud:spring-cloud-starter-gateway'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+}

@@ -1,0 +1,25 @@
+server:
+  port: 7000
+spring:
+  application:
+    name: gateway
+  cloud:
+    nacos:
+      discovery:
+        server-addr: k8s-180:30848
+    ########################
+    # Spring Cloud Gateway 配置
+    ########################
+    gateway:
+      discovery:
+        locator:
+          ## 是否开启通过注册中心进行路由转发
+          enabled: true
+          ## 开启消息服务名称
+          lower-case-service-id: true
+      ## 网关路由配置
+      routes:
+        - id: service-consumer-routh # 路由ID，没有固定规则，需要保证唯一性
+          uri: lb://service-consumer # 服务的目标地址，lb 表示启用 Gateway 负载均衡
+          predicates:
+            - Path=/nacos/**  # 断言，进行路由匹配
