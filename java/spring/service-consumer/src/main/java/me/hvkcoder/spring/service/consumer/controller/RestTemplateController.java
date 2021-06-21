@@ -68,7 +68,7 @@ public class RestTemplateController {
 	 */
 	@GetMapping("/get/load-balance/{name}")
 	public String callProviderByLoadBalance(@PathVariable String name) {
-		return loadBalancer.getForObject("http://SERVICE-PROVIDER/index/${1}", String.class, name);
+		return loadBalancer.getForObject("http://service-provider/index/${1}", String.class, name);
 	}
 
 

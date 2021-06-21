@@ -3,14 +3,11 @@ server:
 
 spring:
   application:
-    name: SERVICE-PROVIDER
+    name: service-provider
   cloud:
     nacos:
-      ########################
-      # Nacos 服务发现配置
-      ########################
       discovery:
-        server-addr: 127.0.0.1:8848
+        server-addr: k8s-180:30848
 ########################
 # Eureka Client 配置
 ########################

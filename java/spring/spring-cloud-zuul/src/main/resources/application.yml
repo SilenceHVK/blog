@@ -1,0 +1,10 @@
+server:
+  port: 7000
+
+spring:
+  application:
+    name: zuul
+  cloud:
+    nacos:
+      discovery:
+        server-addr: k8s-180:30848

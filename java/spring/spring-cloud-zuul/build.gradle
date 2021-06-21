@@ -1,10 +1,7 @@
 dependencies {
-	// Eureka
-//	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
-
 	// Nacos 依赖
 	implementation 'com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-discovery'
-//	implementation 'com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-config'
-
+	// Zuul
+	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-zuul'
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 }
