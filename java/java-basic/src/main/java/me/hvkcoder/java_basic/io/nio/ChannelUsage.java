@@ -4,8 +4,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
 import java.io.*;
+import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.channels.ServerSocketChannel;
+import java.nio.channels.SocketChannel;
 
 /**
  * Channel 用于在字节缓冲区和位于通道另一侧的实体（文件或套接字）之间有效地传输数据
@@ -49,6 +52,60 @@ public class ChannelUsage {
         writeChannel.write(byteBuffer);
         byteBuffer.clear();
       }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  /** ServerSocketChannel 监听通道对应 OIO 中的 ServerSocket */
+  @Test
+  public void testServerSocketChannel() {
+    // 获取一个 ServerSocketChannel
+    try (ServerSocketChannel serverSocketChannel = ServerSocketChannel.open()) {
+      // 设置 ServerSocketChannel 绑定端口
+      serverSocketChannel.socket().bind(new InetSocketAddress(9999));
+      log.info("服务端已启动，等待客户端连接。。。。。。");
+      // 设置非阻塞
+      serverSocketChannel.configureBlocking(false);
+      // 自旋等待客户连接
+      while (true) {
+        SocketChannel socketChannel = serverSocketChannel.accept();
+        // 由于非阻塞的，所以要判断 socketChannel 是否为 null
+        if (socketChannel != null) {
+          log.info("客户端 [{}] 已连接", socketChannel.getRemoteAddress());
+
+          // 向客户端发送消息
+          ByteBuffer buffer = ByteBuffer.allocate(1024);
+          buffer.put("Welcome".getBytes());
+          buffer.flip();
+          socketChannel.write(buffer);
+          buffer.clear();
+
+					// 判断客户端是否断开连接
+          if (socketChannel.finishConnect()) {
+            log.info("客户端 [{}] 已断开", socketChannel.getRemoteAddress());
+            socketChannel.close();
+          }
+        }
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  /** SocketChannel 传输通道对应 OIO 中的 Socket */
+  @Test
+  public void testSocketChannel() {
+    // 获取 SocketChannel，并连接到服务器
+    try (SocketChannel socketChannel = SocketChannel.open(new InetSocketAddress(9999))) {
+      // 自旋判断是否连接服务器
+      while (!socketChannel.finishConnect()) {}
+      log.info("已连接服务器");
+
+      // 接收服务器的数据
+      ByteBuffer buffer = ByteBuffer.allocate(1024);
+      final int dataLength = socketChannel.read(buffer);
+      log.info("服务端：{}", new String(buffer.array(), 0, dataLength));
     } catch (IOException e) {
       e.printStackTrace();
     }
