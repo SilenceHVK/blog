@@ -27,3 +27,26 @@ spring:
     generate-ddl: true
     show-sql: true
     database: mysql
+
+########################
+# Spring Security + CAS 配置
+########################
+cas:
+  ## 验证服务 cas | security
+  verifyServer: security
+  ## 无授权访问
+  notAuthorizeAccess:
+    - /login/cas
+    - /login
+    - /css/**
+    - /img/**
+    - /captcha.png
+  server:
+    prefix: http://127.0.0.1:8080/cas
+    login: ${cas.server.prefix}/login
+    logout: ${cas.server.prefix}/logout
+  client:
+    prefix: http://localhost:${server.port}
+    login: ${cas.client.prefix}/login/cas
+    logout-relative: /logout/cas
+    logout: ${cas.client.prefix}${cas.client.logout-relative}

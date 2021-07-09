@@ -3,13 +3,17 @@ package me.hvkcoder.spring_security.security;
 import com.google.code.kaptcha.Producer;
 import com.google.code.kaptcha.impl.DefaultKaptcha;
 import com.google.code.kaptcha.util.Config;
+import com.mysql.cj.protocol.AuthenticationProvider;
 import me.hvkcoder.spring_security.security.filter.VerificationCodeFilter;
+import org.jasig.cas.client.session.SingleSignOutFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.cas.authentication.CasAuthenticationProvider;
+import org.springframework.security.cas.web.CasAuthenticationFilter;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -18,9 +22,12 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
+import org.springframework.security.web.firewall.HttpFirewall;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -40,6 +47,13 @@ import java.util.Properties;
 public class CustomSecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Autowired private CustomUserDetailService customUserDetailService;
+  @Autowired private CasConfig casConfig;
+  @Autowired private CasAuthenticationProvider authenticationProvider;
+  @Autowired private AuthenticationEntryPoint authenticationEntryPoint;
+  @Autowired private SingleSignOutFilter singleSignOutFilter;
+  @Autowired private LogoutFilter logoutFilter;
+  @Autowired private CasAuthenticationFilter casAuthenticationFilter;
+  @Autowired private HttpFirewall allowUrlSemicolonHttpFirewall;
 
   /**
    * 设置加密对象
@@ -68,11 +82,16 @@ public class CustomSecurityConfig extends WebSecurityConfigurerAdapter {
     return defaultKaptcha;
   }
 
-  @Override
-  protected void configure(HttpSecurity http) throws Exception {
+  /**
+   * 使用自定义验证
+   *
+   * @param http
+   * @throws Exception
+   */
+  private void useCustomAuthorize(HttpSecurity http) throws Exception {
     http.authorizeRequests(
             req ->
-                req.antMatchers("/css/**", "/img/**", "/captcha.png")
+                req.antMatchers(casConfig.getNotAuthorizeAccess())
                     .permitAll()
                     .anyRequest()
                     .authenticated())
@@ -92,6 +111,36 @@ public class CustomSecurityConfig extends WebSecurityConfigurerAdapter {
                     .permitAll())
         // 在 UsernamePasswordAuthenticationFilter 之前添加自定义过滤器
         .addFilterBefore(new VerificationCodeFilter(), UsernamePasswordAuthenticationFilter.class);
+  }
+
+  /**
+   * 使用 CAS 授权验证
+   *
+   * @param http
+   * @throws Exception
+   */
+  private void useCasAuthorize(HttpSecurity http) throws Exception {
+    http.authorizeRequests(
+            req ->
+                req.antMatchers(casConfig.getNotAuthorizeAccess())
+                    .permitAll()
+                    .anyRequest()
+                    .authenticated())
+        .exceptionHandling(handler -> handler.authenticationEntryPoint(authenticationEntryPoint))
+        .addFilter(casAuthenticationFilter)
+        .addFilter(casAuthenticationFilter)
+        .addFilterBefore(singleSignOutFilter, CasAuthenticationFilter.class)
+        .addFilterBefore(logoutFilter, LogoutFilter.class)
+        .httpBasic();
+  }
+
+  @Override
+  protected void configure(HttpSecurity http) throws Exception {
+    if ("cas".equals(casConfig.getVerifyServer())) {
+      useCasAuthorize(http);
+    } else {
+      useCustomAuthorize(http);
+    }
   }
 
   /**
@@ -127,7 +176,11 @@ public class CustomSecurityConfig extends WebSecurityConfigurerAdapter {
     //	auth.inMemoryAuthentication().withUser("root").password(passwordEncoder.encode("123456")).roles("admin");
     //	auth.inMemoryAuthentication().withUser("user").password(passwordEncoder.encode("123456")).roles("normal");
 
-    // 指定 UserService
-    auth.userDetailsService(customUserDetailService).passwordEncoder(passwordEncoder());
+    if ("cas".equals(casConfig.getVerifyServer())) {
+      auth.authenticationProvider(authenticationProvider);
+    } else {
+      // 指定 UserService
+      auth.userDetailsService(customUserDetailService).passwordEncoder(passwordEncoder());
+    }
   }
 }
