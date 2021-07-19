@@ -1,11 +1,10 @@
 package me.hvkcoder.java_basic.io.netty;
 
+import io.netty.bootstrap.Bootstrap;
+import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.ChannelHandler;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.channel.EventLoopGroup;
+import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
@@ -28,12 +27,17 @@ public class TestNetty {
     final NioEventLoopGroup eventLoopGroup = new NioEventLoopGroup();
     final NioServerSocketChannel serverSocketChannel = new NioServerSocketChannel();
     eventLoopGroup.register(serverSocketChannel);
-    serverSocketChannel.pipeline().addLast(new AcceptHandler(eventLoopGroup, new InitChannel() {
-			@Override
-			public void initChannel(ChannelHandlerContext ctx) {
-				ctx.pipeline().addLast(new IOHandler());
-			}
-		}));
+    serverSocketChannel
+        .pipeline()
+        .addLast(
+            new AcceptHandler(
+                eventLoopGroup,
+                new InitChannel() {
+                  @Override
+                  public void initChannel(ChannelHandlerContext ctx) {
+                    ctx.pipeline().addLast(new IOHandler());
+                  }
+                }));
     serverSocketChannel.bind(new InetSocketAddress("127.0.0.1", 9999)).sync();
     serverSocketChannel.closeFuture().sync();
     log.info("服务器已关闭");
@@ -41,15 +45,50 @@ public class TestNetty {
 
   @Test
   public void testClientMode() throws InterruptedException {
-		final NioEventLoopGroup eventLoopGroup = new NioEventLoopGroup();
-		final NioSocketChannel socketChannel = new NioSocketChannel();
-		eventLoopGroup.register(socketChannel);
-		socketChannel.pipeline().addLast(new IOHandler());
-		socketChannel.connect(new InetSocketAddress("127.0.0.1", 9999)).sync();
-		socketChannel.writeAndFlush(Unpooled.copiedBuffer("Hello World".getBytes()));
-		socketChannel.closeFuture().sync();
-		log.info("客户端已断开");
-	}
+    final NioEventLoopGroup eventLoopGroup = new NioEventLoopGroup();
+    final NioSocketChannel socketChannel = new NioSocketChannel();
+    eventLoopGroup.register(socketChannel);
+    socketChannel.pipeline().addLast(new IOHandler());
+    socketChannel.connect(new InetSocketAddress("127.0.0.1", 9999)).sync();
+    socketChannel.writeAndFlush(Unpooled.copiedBuffer("Hello World".getBytes()));
+    socketChannel.closeFuture().sync();
+    log.info("客户端已断开");
+  }
+
+  @Test
+  public void testNettyServer() throws InterruptedException {
+    final NioEventLoopGroup eventLoopGroup = new NioEventLoopGroup();
+    final ServerBootstrap serverBootstrap = new ServerBootstrap();
+    final ChannelFuture channelFuture =
+        serverBootstrap
+            .group(eventLoopGroup, eventLoopGroup)
+            .channel(NioServerSocketChannel.class)
+            .childHandler(
+                new ChannelInitializer<NioSocketChannel>() {
+                  @Override
+                  protected void initChannel(NioSocketChannel ch) throws Exception {
+                    ch.pipeline().addLast(new IOHandler());
+                  }
+                })
+            .bind(new InetSocketAddress("127.0.0.1", 9999));
+    channelFuture.sync().channel().closeFuture().sync();
+  }
+
+  @Test
+  public void testNettyClient() throws InterruptedException {
+    final NioEventLoopGroup eventLoopGroup = new NioEventLoopGroup();
+    final Bootstrap bootstrap = new Bootstrap();
+    final ChannelFuture channelFuture =
+        bootstrap
+            .group(eventLoopGroup)
+            .channel(NioSocketChannel.class)
+            .handler(new IOHandler())
+            .connect(new InetSocketAddress("127.0.0.1", 9999));
+
+    final Channel channel = channelFuture.sync().channel();
+    channel.writeAndFlush(Unpooled.copiedBuffer("Hello World".getBytes())).sync();
+    channel.closeFuture().sync();
+  }
 
   /** 处理客户端连接 */
   public class AcceptHandler extends ChannelInboundHandlerAdapter {
@@ -75,7 +114,7 @@ public class TestNetty {
     }
   }
 
-  /** 中间桥接，用于用户 Handler 注册 */
+  /** 中间过桥，用于用户 Handler 注册 */
   @ChannelHandler.Sharable
   public abstract class InitChannel extends ChannelInboundHandlerAdapter {
     public abstract void initChannel(ChannelHandlerContext ctx);
