@@ -9,4 +9,5 @@ include 'spring:spring-cloud-gateway'
 include 'spring:service-provider'
 include 'spring:service-consumer'
 include 'spring:spring-security'
+include 'spring:spring-practice'
 

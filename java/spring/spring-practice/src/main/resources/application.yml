@@ -1,0 +1,19 @@
+server:
+  port: 9000
+spring:
+  application:
+    name: spring-practice
+  kafka:
+    master:
+      bootstrap-servers: k8s-180:9092
+      consumer:
+        group-id: test-group
+        enable-auto-commit: true
+    slave:
+      bootstrap-servers: k8s-181:9092
+      consumer:
+        group-id: test-group
+        enable-auto-commit: true
+netty:
+  host: 127.0.0.1
+  port: 9001
