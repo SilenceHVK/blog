@@ -128,7 +128,6 @@ public class CustomSecurityConfig extends WebSecurityConfigurerAdapter {
                     .authenticated())
         .exceptionHandling(handler -> handler.authenticationEntryPoint(authenticationEntryPoint))
         .addFilter(casAuthenticationFilter)
-        .addFilter(casAuthenticationFilter)
         .addFilterBefore(singleSignOutFilter, CasAuthenticationFilter.class)
         .addFilterBefore(logoutFilter, LogoutFilter.class)
         .httpBasic();

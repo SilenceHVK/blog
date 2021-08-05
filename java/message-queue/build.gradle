@@ -1,0 +1,4 @@
+dependencies {
+	implementation 'org.apache.kafka:kafka-clients:2.4.0'
+	implementation 'org.apache.rocketmq:rocketmq-client:4.6.1'
+}
