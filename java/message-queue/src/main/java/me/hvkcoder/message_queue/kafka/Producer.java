@@ -29,6 +29,16 @@ public class Producer {
 		properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
 		// 设置 Value 序列化类
 		properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+
+		// 设置 Kafka Ack
+		properties.put(ProducerConfig.ACKS_CONFIG, "all");
+		// 设置确认超时时间
+		properties.put(ProducerConfig.REQUEST_TIMEOUT_MS_CONFIG, 1);
+		// 设置重试次数
+		properties.put(ProducerConfig.RETRIES_CONFIG, 3);
+		// 开启 Kafka 幂等
+		properties.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, true);
+
 		kafkaProducer = new KafkaProducer<>(properties);
 	}
 
