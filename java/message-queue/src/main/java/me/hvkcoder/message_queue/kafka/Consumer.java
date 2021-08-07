@@ -37,6 +37,8 @@ public class Consumer {
 		// 设置消费者自动提交 offset 提交间隔
 //		properties.put(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, 5000);
 
+		// 设置消费这的消费事务的隔离级别
+//		properties.put(ConsumerConfig.ISOLATION_LEVEL_CONFIG, "read_committed");
 
 		// 创建 Consumer
 		final KafkaConsumer<String, String> kafkaConsumer = new KafkaConsumer<>(properties);
