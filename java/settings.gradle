@@ -11,4 +11,8 @@ include 'spring:service-consumer'
 include 'spring:spring-security'
 include 'spring:spring-practice'
 include 'message-queue'
+include 'dubbo'
+include 'dubbo:common'
+include 'dubbo:consumer'
+include 'dubbo:provider'
 
