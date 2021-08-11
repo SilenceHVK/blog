@@ -3,7 +3,8 @@ buildscript {
 		springBootVersion = '2.3.0.RELEASE'
 		springCloudVersion = 'Hoxton.SR4'
 		springCloudAlibabaVersion = '2.2.1.RELEASE'
-		dubboVersion = '3.0.0'
+		dubboVersion = '2.7.8'
+		curatorVersion = '5.1.0'
 	}
 }
 
@@ -21,11 +22,16 @@ subprojects {
 			mavenBom "org.springframework.boot:spring-boot-dependencies:${springBootVersion}"
 			mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
 			mavenBom "com.alibaba.cloud:spring-cloud-alibaba-dependencies:${springCloudAlibabaVersion}"
-			mavenBom "org.apache.dubbo:dubbo-dependencies-bom:${dubboVersion}"
 		}
 	}
 
 	dependencies {
+		implementation "org.apache.dubbo:dubbo-spring-boot-starter:${dubboVersion}"
+		implementation "org.apache.curator:curator-framework:${curatorVersion}"
+		implementation "org.apache.curator:curator-recipes:${curatorVersion}"
+		if (!project.name.equals("common")) {
+			implementation 'org.springframework.boot:spring-boot-starter-web'
+		}
 	}
 }
 
