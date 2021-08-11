@@ -1,0 +1,18 @@
+server:
+  port: 9000
+spring:
+  application:
+    name: dubbo-provider
+    service:
+      version: 1.0.0
+########################
+# Dubbo 服务配置
+########################
+dubbo:
+  scan:
+    base-packages: me.hvkcoder.dubbo.common.service
+  protocol:
+    name: dubbo
+    port: 6666
+  registry:
+    address: zookeeper://k8s-180:30181/dubbo
