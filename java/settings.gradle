@@ -1,6 +1,6 @@
 rootProject.name = 'java'
 include 'java-basic'
-include 'bigdata-hadoop'
+include 'bigdata'
 include 'vertx'
 include 'spring'
 include 'spring:spring-cloud-eureka'
