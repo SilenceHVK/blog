@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>SSE 实现</title>
+</head>
+<body>
+	<div style="height: 500px;width: 500px; border: 1px solid #ccc" id="container"></div>
+	<script>
+		window.onload = function () {
+			const $container = document.querySelector('#container');
+			const eventSource = new EventSource('http://localhost:9000/sse/log');
+
+			eventSource.onopen = function (e) {
+				$container.innerHTML = '<p>建立连接成功~</p>'
+			}
+
+			eventSource.onmessage = function (e) {
+				$container.innerHTML += `<p>${e.data}</p>`
+			}
+
+			eventSource.onerror = function (e) {
+				$container.innerHTML += `<p>${e.data}</p>`
+			}
+		}
+	</script>
+</body>
+</html>
