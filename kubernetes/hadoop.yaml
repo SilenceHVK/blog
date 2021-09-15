@@ -1,0 +1,197 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: hadoop-svc
+  namespace: bigdata
+  labels:
+    app: hadoop
+spec:
+  selector:
+    app: hadoop
+  type: NodePort
+  ports:
+  - name: hdfs-web
+    port: 9870
+    nodePort: 31870
+  - name: yarn-web
+    port: 8088
+    nodePort: 31880
+  - name: hdfs-port
+    port: 9000
+    nodePort: 31900
+  - name: dn-port
+    port: 31986
+    nodePort: 31986
+  - name: dn-web-port 
+    port: 31984
+    nodePort: 31984
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hadoop-cm
+  namespace: bigdata
+  labels:
+    app: hadoop
+data:
+  core-site.xml: |-
+    <?xml version="1.0" encoding="UTF-8"?>
+    <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+    <configuration>
+      <property>
+        <name>fs.defaultFS</name>
+        <value>hdfs://0.0.0.0:9000</value>
+      </property>
+      <property>
+        <name>hadoop.tmp.dir</name>
+        <value>/var/hadoop</value>
+      </property>
+      <property>
+        <name>hadoop.proxyuser.root.hosts</name>
+        <value>*</value>
+      </property>
+      <property>
+        <name>hadoop.proxyuser.root.groups</name>
+        <value>*</value>
+      </property>
+    </configuration>
+
+  hdfs-site.xml: |-
+    <?xml version="1.0" encoding="UTF-8"?>
+    <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+    <configuration>
+      <property>
+        <name>dfs.replication</name>
+        <value>1</value>
+      </property>
+      <property>
+        <name>dfs.webhdfs.enable</name>
+        <value>true</value>
+      </property>
+      <property>
+        <name>dfs.datanode.address</name>
+        <value>0.0.0.0:31986</value>
+      </property>
+      <property>
+        <name>dfs.datanode.http.address</name>
+        <value>0.0.0.0:31984</value>
+      </property>
+      <property>
+        <name>dfs.namenode.name.dir</name>
+        <value>file://${hadoop.tmp.dir}/dfs/name</value>
+      </property>
+      <property>
+        <name>dfs.datanode.data.dir</name>
+        <value>file://${hadoop.tmp.dir}/dfs/data</value>
+      </property>
+      <property>
+        <name>dfs.namenode.secondary.http-address</name>
+        <value>0.0.0.0:50090</value>
+      </property>
+      <property>
+        <name>dfs.namenode.checkpoint.dir</name>
+        <value>file://${hadoop.tmp.dir}/dfs/namesecondary</value>
+      </property>
+    </configuration>
+  
+  mapred-site.xml: |-
+    <?xml version="1.0" encoding="UTF-8"?>
+    <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+    <configuration>
+      <property>
+        <name>mapreduce.framework.name</name>
+        <value>yarn</value>
+      </property>
+      <property>
+        <name>yarn.app.mapreduce.am.env</name>
+        <value>HADOOP_MAPRED_HOME=/opt/hadoop</value>
+      </property>
+      <property>
+        <name>mapreduce.map.env</name>
+        <value>HADOOP_MAPRED_HOME=/opt/hadoop</value>
+      </property>
+      <property>
+        <name>mapreduce.reduce.env</name>
+        <value>HADOOP_MAPRED_HOME=/opt/hadoop</value>
+      </property>
+    </configuration>
+
+  yarn-site.xml: |-
+    <?xml version="1.0" encoding="UTF-8"?>
+    <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+    <configuration>
+      <property>
+        <name>yarn.nodemanager.aux-services</name>
+        <value>mapreduce_shuffle</value>
+      </property>
+    </configuration>
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hadoop
+  namespace: bigdata
+  labels:
+    app: hadoop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hadoop
+  template:
+    metadata:
+      labels:
+        app: hadoop
+    spec:
+      hostname: hadoop
+      containers:
+      - name: hadoop
+        image: hvkcoder/hadoop:3.3.0
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: hdfs-web
+          containerPort: 9870
+        - name: yarn-web
+          containerPort: 8088
+        - name: hdfs-port
+          containerPort: 9000
+        - name: dn-port
+          containerPort: 9866
+        - name: dn-web-port
+          containerPort: 9864
+        volumeMounts:
+        - name: hadoop-data
+          mountPath: /var/hadoop
+        - name: hadoop-opt
+          mountPath: /opt/hadoop-opt
+        - name: hadoop-cm
+          mountPath: /opt/hadoop/etc/hadoop/core-site.xml
+          subPath: core-site.xml
+        - name: hadoop-cm
+          mountPath: /opt/hadoop/etc/hadoop/hdfs-site.xml
+          subPath: hdfs-site.xml
+        - name: hadoop-cm
+          mountPath: /opt/hadoop/etc/hadoop/mapred-site.xml
+          subPath: mapred-site.xml
+        - name: hadoop-cm
+          mountPath: /opt/hadoop/etc/hadoop/yarn-site.xml
+          subPath: yarn-site.xml
+      volumes:
+      - name: hadoop-data
+        hostPath:
+          path: /opt/kubernetes/application/hadoop/hadoop-data
+      - name: hadoop-opt
+        hostPath:
+          path: /opt/kubernetes/application/hadoop/hadoop-opt
+      - name: hadoop-cm
+        configMap:
+          name: hadoop-cm
+          items:
+          - key: core-site.xml
+            path: core-site.xml
+          - key: hdfs-site.xml
+            path: hdfs-site.xml
+          - key: mapred-site.xml
+            path: mapred-site.xml
+          - key: yarn-site.xml
+            path: yarn-site.xml

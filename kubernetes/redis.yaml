@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-svc
+  namespace: database
+  labels:
+    app: redis
+spec:
+  selector:
+    app: redis
+  type: NodePort
+  ports:
+  - name: redis-port
+    port: 6379
+    nodePort: 30679
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: redis
+  namespace: database
+  labels:
+    app: redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+      - name: redis
+        image: redis:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: redis-port
+          containerPort: 6379 

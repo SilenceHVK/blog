@@ -1,0 +1,110 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nacos-service
+  namespace: micro-service
+  labels:
+    app: nacos
+spec:
+  type: NodePort
+  selector:
+    app: nacos
+  ports:
+  - name: nacos-server
+    port: 8848
+    nodePort: 30848
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nacos-cm
+  namespace: micro-service
+  labels:
+    app: nacos
+data:
+  mysql.host: "mysql.database"
+  mysql.port: "3306"
+  mysql.db.name: "nacos_config"
+  mysql.user: "root"
+  mysql.password: "123456"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nacos
+  namespace: micro-service
+  labels:
+    app: nacos
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nacos
+  template:
+    metadata:
+      labels:
+        app: nacos
+    spec:
+      initContainers:
+      - name: init-mysql
+        image: busybox:1.28
+        imagePullPolicy: IfNotPresent
+        command: ['sh', '-c', 'until nslookup mysql.database.svc.cluster.local; do echo waiting for mysql; sleep 2;done;']
+      containers:
+      - image: nacos/nacos-server:latest
+        name: nacos
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: nacos-server
+          containerPort: 8848
+        env:
+        - name: NACOS_REPLICAS
+          value: "1"
+        - name: MODE
+          value: "standalone"
+        - name: SPRING_DATASOURCE_PLATFORM
+          value: "mysql"
+        - name: MYSQL_SERVICE_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: nacos-cm
+              key: mysql.host
+        - name: MYSQL_SERVICE_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: nacos-cm
+              key: mysql.port
+        - name: MYSQL_SERVICE_DB_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: nacos-cm
+              key: mysql.db.name
+        - name: MYSQL_SERVICE_USER
+          valueFrom:
+            configMapKeyRef:
+              name: nacos-cm
+              key: mysql.user
+        - name: MYSQL_SERVICE_PASSWORD
+          valueFrom:
+            configMapKeyRef:
+              name: nacos-cm
+              key: mysql.password
+        volumeMounts:
+        - name: nacos-data
+          mountPath: /home/nacos/data
+        - name: nacos-logs
+          mountPath: /home/nacos/logs
+        - name: nacos-conf
+          mountPath: /home/nacos/conf
+      volumes:
+      - name: nacos-data
+        hostPath:
+          path: /opt/kubernetes/application/nacos/data
+      - name: nacos-logs
+        hostPath:
+          path: /opt/kubernetes/application/nacos/logs
+      - name: nacos-conf
+        hostPath:
+          path: /opt/kubernetes/application/nacos/conf
+
+         

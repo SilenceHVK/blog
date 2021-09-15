@@ -1,0 +1,251 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: zookeeper1
+  namespace: development
+  labels:
+    app: zookeeper
+    zk-cluster: node-01
+spec:
+  clusterIP: None
+  type: ClusterIP
+  selector:
+    zk-cluster: node-01
+  ports:
+  - name: server
+    port: 2888
+  - name: leader-election
+    port: 3888
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: zookeeper2
+  namespace: development
+  labels:
+    app: zookeeper
+    zk-cluster: node-02
+spec:
+  clusterIP: None
+  type: ClusterIP
+  selector:
+    zk-cluster: node-02
+  ports:
+  - name: server
+    port: 2888
+  - name: leader-election
+    port: 3888
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: zookeeper3
+  namespace: development
+  labels:
+    app: zookeeper
+    zk-cluster: node-03
+spec:
+  clusterIP: None
+  type: ClusterIP
+  selector:
+    zk-cluster: node-03
+  ports:
+  - name: server
+    port: 2888
+  - name: leader-election
+    port: 3888
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: zookeeper-svc
+  namespace: development
+  labels:
+    app: zookeeper
+spec:
+  type: NodePort
+  selector:
+    app: zookeeper
+  ports:
+  - name: zk-client
+    port: 2181
+    nodePort: 30181
+---
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: zk-pdb
+  namespace: development
+  labels:
+    app: zookeeper
+spec:
+  selector:
+    matchLabels:
+      app: zookeeper
+  maxUnavailable: 1
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: zookeeper-node-01
+  namespace: development
+  labels:
+    app: zookeeper
+spec:
+  replicas: 1 
+  serviceName: zookeeper-svc
+  selector:
+    matchLabels:
+      app: zookeeper
+      zk-cluster: node-01
+  updateStrategy:
+    type: RollingUpdate
+  podManagementPolicy: OrderedReady
+  template:
+    metadata:
+      labels:
+        app: zookeeper
+        zk-cluster: node-01
+    spec:
+      containers:
+      - name: zookeeper
+        image: zookeeper
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: ZOO_MY_ID
+          value: '1'
+        - name: ZOO_SERVERS
+          value: >-
+            server.1=zookeeper1:2888:3888;2181
+            server.2=zookeeper2:2888:3888;2181
+            server.3=zookeeper3:2888:3888;2181
+        ports:
+        - name: zk-client
+          containerPort: 2181
+        - name: server
+          containerPort: 2888
+        - name: leader-election
+          containerPort: 3888
+        volumeMounts:
+        - name: data
+          mountPath: /data
+        - name: log
+          mountPath: /datalog
+      volumes:
+      - name: data
+        hostPath:
+          path: /opt/kubernetes/application/zookeeper/node-01/data
+      - name: log
+        hostPath:
+          path: /opt/kubernetes/application/zookeeper/node-01/log
+       
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: zookeeper-node-02
+  namespace: development
+  labels:
+    app: zookeeper
+spec:
+  replicas: 1
+  serviceName: zookeeper-svc
+  selector:
+    matchLabels:
+      app: zookeeper
+      zk-cluster: node-02
+  updateStrategy:
+    type: RollingUpdate
+  podManagementPolicy: OrderedReady
+  template:
+    metadata:
+      labels:
+        app: zookeeper
+        zk-cluster: node-02
+    spec:
+      containers:
+      - name: zookeeper
+        image: zookeeper
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: ZOO_MY_ID
+          value: '2'
+        - name: ZOO_SERVERS
+          value: >-
+            server.1=zookeeper1:2888:3888;2181
+            server.2=zookeeper2:2888:3888;2181
+            server.3=zookeeper3:2888:3888;2181
+        ports:
+        - name: zk-client
+          containerPort: 2181
+        - name: server
+          containerPort: 2888
+        - name: leader-election
+          containerPort: 3888
+        volumeMounts:
+        - name: data
+          mountPath: /data
+        - name: log
+          mountPath: /datalog
+      volumes:
+      - name: data
+        hostPath:
+          path: /opt/kubernetes/application/zookeeper/node-02/data
+      - name: log
+        hostPath:
+          path: /opt/kubernetes/application/zookeeper/node-02/log
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: zookeeper-node-03
+  namespace: development
+  labels:
+    app: zookeeper
+spec:
+  replicas: 1
+  serviceName: zookeeper-svc
+  selector:
+    matchLabels:
+      app: zookeeper
+      zk-cluster: node-03
+  updateStrategy:
+    type: RollingUpdate
+  podManagementPolicy: OrderedReady
+  template:
+    metadata:
+      labels:
+        app: zookeeper
+        zk-cluster: node-03
+    spec:
+      containers:
+      - name: zookeeper
+        image: zookeeper
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: ZOO_MY_ID
+          value: '3'
+        - name: ZOO_SERVERS
+          value: >-
+            server.1=zookeeper1:2888:3888;2181
+            server.2=zookeeper2:2888:3888;2181
+            server.3=zookeeper3:2888:3888;2181
+        ports:
+        - name: zk-client
+          containerPort: 2181
+        - name: server
+          containerPort: 2888
+        - name: leader-election
+          containerPort: 3888
+        volumeMounts:
+        - name: data
+          mountPath: /data
+        - name: log
+          mountPath: /datalog
+      volumes:
+      - name: data
+        hostPath:
+          path: /opt/kubernetes/application/zookeeper/node-03/data
+      - name: log
+        hostPath:
+          path: /opt/kubernetes/application/zookeeper/node-03/log

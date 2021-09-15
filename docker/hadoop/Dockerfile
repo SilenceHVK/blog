@@ -33,6 +33,7 @@ RUN mkdir -p $HADOOP_DATA \
 	&& echo "export YARN_RESOURCEMANAGER_USER=$HADOOP_USER" >> $HADOOP_CONF/yarn-env.sh \
 	&& echo "export YARN_NODEMANAGER_USER=$HADOOP_USER" >> $HADOOP_CONF/yarn-env.sh \
 	&& echo "PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin" >> ~/.bashrc \
+  && echo "hadoop" > $HADOOP_CONF/workers \
 	&& rm -rf $TAR \
 	&& ssh-keygen -t rsa -P '' -f ~/.ssh/id_rsa \
 	&& cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys \
@@ -42,6 +43,6 @@ ADD *.xml $HADOOP_CONF/
 ADD ssh_config /root/.ssh/config
 ADD start-all.sh start-all.sh
 
-EXPOSE 8088 9870 9864 19888 8042 22 50090
+EXPOSE 8088 9000 9870 9864 19888 8042 22 50090
 
 CMD [ "bash", "start-all.sh" ]

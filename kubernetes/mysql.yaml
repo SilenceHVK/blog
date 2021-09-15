@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+  namespace: database
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      restartPolicy: Always
+      containers:
+      - name: mysql
+        image: mysql
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 3306
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-password
+              key: password
+        volumeMounts:
+        - name: mysql-data
+          mountPath: /var/lib/mysql
+        - name: mysql-log
+          mountPath: /var/log
+      volumes:
+      - name: mysql-data
+        hostPath:
+          path: /opt/kubernetes/application/mysql/data  
+      - name: mysql-log
+        hostPath:
+          path: /opt/kubernetes/application/mysql/log
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql
+  namespace: database
+spec:
+  selector:
+    app: mysql
+  type: NodePort
+  ports:
+  - name: mysql
+    protocol: TCP
+    port: 3306
+    targetPort: 3306
+    nodePort: 30060
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mysql-password
+  namespace: database
+data:
+  password: MTIzNDU2
+  

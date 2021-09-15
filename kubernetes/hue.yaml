@@ -1,0 +1,100 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: hue-svc
+  namespace: bigdata
+  labels:
+    app: hue
+spec:
+  selector:
+    app: hue
+  type: NodePort
+  ports:
+  - name: hue-web
+    port: 8888
+    nodePort: 31888
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hue-cm
+  namespace: bigdata
+  labels:
+    app: hue
+data:
+  hue.ini: |-
+    [desktop]
+    secret_key=asdfghjkl!@#$%123  # 配置会话 Hash 加密，字符串随机，越长越好 
+    time_zone=Asia/Shanghai # 配置时区
+    
+    # 配置监听地址
+    http_host=0.0.0.0
+    http_port=8888
+  
+    # Hue 默认登录用户
+    server_user=hue
+    server_group=hue
+    default_user=hue
+
+    # 对 HDFS 访问权限的用户
+    default_hdfs_superuser=root
+
+    # 数据库配置
+    [[database]]  
+    engine=mysql # 数据库引擎
+    host=mysql.database.svc.cluster.local # 数据库连接地址
+    port=3306 # 数据库端口号
+    user=root # 数据库用户名
+    password=123456 # 数据库登录密码
+    name=hub # 指定数据库名称
+
+    [hadoop]
+    # Configuration for HDFS NameNode
+    [[hdfs_clusters]]
+    [[[default]]]
+    fs_defaultfs=hdfs://hadoop-svc.bigdata.svc.cluster.local:9000
+    webhdfs_url=http://hadoop-svc.bigdata.svc.cluster.local:9870/webhdfs/v1
+    [[yarn_clusters]]
+    [[[default]]]
+    resourcemanager_host=hadoop-svc.bigdata.svc.cluster.local
+    resourcemanager_api_url=http://hadoop-svc.bigdata.svc.cluster.local:8088/
+    proxy_api_url=http://hadoop-svc.bigdata.svc.cluster.local:8088/
+    resourcemanager_port=8032
+    history_server_api_url=http://hadoop-svc.bigdata.svc.cluster.local:19888/
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hue
+  namespace: bigdata
+  labels:
+    app: hue
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hue
+  template:
+    metadata:
+      labels:
+        app: hue
+    spec:
+      containers:
+      - name: hue
+        image: gethue/hue:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: hue-web
+          containerPort: 8888
+        volumeMounts:
+        - name: hue-cm
+          mountPath: /usr/share/hue/desktop/conf/hue.ini
+          subPath: hue.ini
+      volumes:
+      - name: hue-cm
+        configMap:
+          name: hue-cm
+          items:
+          - key: hue.ini
+            path: hue.ini
+           
