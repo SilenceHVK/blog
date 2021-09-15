@@ -25,7 +25,7 @@ public class HDFS {
 	/**
 	 * HDFS 上传根目录
 	 */
-	private static final String HDFS_ROOT_PATH = "hdfs://192.168.56.180:31900/";
+	private static final String HDFS_ROOT_PATH = "hdfs://k8s-180:31900/source/";
 
 	private FileSystem fileSystem;
 	private Configuration conf;
@@ -39,6 +39,9 @@ public class HDFS {
 		conf = new Configuration(true);
 		conf.set("fs.hdfs.impl", "org.apache.hadoop.hdfs.DistributedFileSystem");
 		conf.set("fs.file.impl", "org.apache.hadoop.fs.LocalFileSystem");
+		conf.set("dfs.replication", "1");
+		conf.set("dfs.client.use.datanode.hostname", "true");
+
 		// 获取文件系统
 		fileSystem = FileSystem.get(URI.create(HDFS_ROOT_PATH), conf, "root");
 	}
@@ -57,7 +60,7 @@ public class HDFS {
 			fileSystem.delete(path, true);
 		}
 	}
-	
+
 	/**
 	 * 上传文件
 	 */

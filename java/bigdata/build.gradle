@@ -1,10 +1,17 @@
 buildscript {
 	ext {
 		hadoopVersion = '3.3.0'
+		avroVersion = '1.8.2'
+		parquetVersion = '1.11.0'
 	}
 }
 
 dependencies {
 	implementation "org.apache.hadoop:hadoop-client:$hadoopVersion"
 	implementation "org.apache.hadoop:hadoop-hdfs:$hadoopVersion"
+
+	implementation "org.apache.avro:avro:$avroVersion"
+	implementation "org.apache.parquet:parquet-column:$parquetVersion"
+	implementation "org.apache.parquet:parquet-hadoop:$parquetVersion"
+	implementation "org.apache.parquet:parquet-avro:$parquetVersion"
 }
