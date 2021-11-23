@@ -1,0 +1,19 @@
+// 定义 protobuf 使用版本
+syntax = "proto3";
+
+// 定义生成后的包名：生成路径;包名
+option go_package = "./proto;proto";
+
+service Greeter {
+	rpc SayHello(HelloRequest) returns(HelloReply);
+}
+
+message HelloRequest {
+	string name = 1;
+}
+
+message HelloReply {
+	string message = 1;
+}
+
+// 通过命令生成 protoc -I . --go_out=:. --go-grpc_out=:.  *.proto
