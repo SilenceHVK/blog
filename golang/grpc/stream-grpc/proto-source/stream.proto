@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+option go_package = "./proto;proto";
+
+service Stream {
+	rpc GetStream(StreamReqData) returns(stream StreamRespData); // 服务端流模式
+	rpc PutStream(stream StreamReqData) returns(StreamRespData); // 客户端流模式
+	rpc AllStream(stream StreamReqData) returns(stream StreamRespData); // 双向流模式
+}
+
+message StreamReqData {
+	string data = 1;
+}
+
+message StreamRespData {
+	string data = 1;
+}
