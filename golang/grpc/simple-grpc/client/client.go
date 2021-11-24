@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/SilenceHVK/blog/golang/grpc/simple-grpc/proto_source/proto"
+	"github.com/SilenceHVK/blog/golang/grpc/simple-grpc/proto-source/proto"
 	"google.golang.org/grpc"
 )
 
