@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+option go_package = "./proto;proto";
+
+// 引入外部 protobuf
+import "google/protobuf/empty.proto";
+
+service EmployeeService {
+	rpc GetAllEmployees(google.protobuf.Empty) returns (QueryResp);
+}
+
+message QueryResp {
+	repeated string employees = 1;
+}
