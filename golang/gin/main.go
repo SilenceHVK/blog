@@ -59,6 +59,11 @@ func main() {
 	// 根据提交的数据，绑定结构体
 	r.Any("/bind", handle.BindStruct)
 
+	// 返回 protobuf
+	r.GET("/protobuf", handle.Protobuf)
+
+	// purejson
+	r.GET("/purejson", handle.PureJson)
 	// 服务端监听端口
 	r.Run(":8080")
 }

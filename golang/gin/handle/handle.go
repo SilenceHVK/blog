@@ -1,6 +1,7 @@
 package handle
 
 import (
+	"github.com/SilenceHVK/blog/golang/gin/proto-source/proto"
 	"io/ioutil"
 	"net/http"
 
@@ -61,8 +62,25 @@ func BindStruct(context *gin.Context) {
 	}
 }
 
+// RenderTemplate 渲染模板
 func RenderTemplate(context *gin.Context) {
 	context.HTML(http.StatusOK, "index.html", gin.H{
 		"title": "Render Template",
+	})
+}
+
+// Protobuf 返回 protobuf
+func Protobuf(context *gin.Context) {
+	teacher := &proto.Teacher{
+		Name:   "hvkcoder",
+		Course: []string{"Golang", "Java", "Python", "JavaScript"},
+	}
+	context.ProtoBuf(http.StatusOK, teacher)
+}
+
+// PureJson json 会将特殊的HTML字符替换为对应的 unicode 字符 pureJSON 则会原样返回
+func PureJson(context *gin.Context) {
+	context.PureJSON(http.StatusOK, gin.H{
+		"html": "<h1>Hello Pure</h1>",
 	})
 }
