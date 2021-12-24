@@ -2,6 +2,10 @@ package me.hvkcoder.java_basic.juc.aqs;
 
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 /**
  * JDK1.5 新增加在的 ReentrantLock 可重入锁（也叫 递归锁）
  *
@@ -17,5 +21,48 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class AQS04_ReentrantLock {
+	public static void main(String[] args) {
+		Lock lock = new ReentrantLock();
+		Condition condition = lock.newCondition();
+		int[] i = new int[]{0};
 
+		new Thread(() -> {
+			while (i[0] < 10) {
+				lock.lock();
+				try {
+					if (i[0] % 2 == 1) {
+						log.info("{} : {}", Thread.currentThread().getName(), i[0]);
+						i[0]++;
+						condition.signal();
+					} else {
+						condition.await();
+					}
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				} finally {
+					lock.unlock();
+				}
+			}
+		}, "奇数").start();
+
+
+		new Thread(() -> {
+			while (i[0] < 10) {
+				lock.lock();
+				try {
+					if (i[0] % 2 == 0) {
+						log.info("{} : {}", Thread.currentThread().getName(), i[0]);
+						i[0]++;
+						condition.signal();
+					} else {
+						condition.await();
+					}
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				} finally {
+					lock.unlock();
+				}
+			}
+		}, "偶数").start();
+	}
 }
