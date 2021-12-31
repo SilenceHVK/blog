@@ -42,6 +42,14 @@ func GetQuery(context *gin.Context) {
 	context.String(http.StatusOK, "Query "+context.DefaultQuery("name", "test"))
 }
 
+func FormMap(context *gin.Context) {
+	formMap := context.PostFormMap("user")
+	context.JSON(http.StatusOK, gin.H{
+		"name": formMap["name"],
+		"age":  formMap["age"],
+	})
+}
+
 func PostBody(context *gin.Context) {
 	// 获取 Post Form 提交数据
 	content, err := ioutil.ReadAll(context.Request.Body)

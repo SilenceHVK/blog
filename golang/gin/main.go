@@ -53,6 +53,9 @@ func main() {
 	// 获取 url 参数 ?key=value
 	r.GET("/query", handle.GetQuery)
 
+	// 获取 form 表单提交数据 -d "user[name]=hvkcoder&user[age]=18"
+	r.POST("/form-map", handle.FormMap)
+
 	// 获取 form 表单提交数据
 	r.POST("/form", handle.PostBody)
 
