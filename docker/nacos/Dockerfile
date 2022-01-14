@@ -9,7 +9,7 @@ ENV BASE_DIR="/opt/nacos" \
 		NACOS_FILE="nacos-server-${NACOS_VERSION}" \
 		JAVA_HOME="/usr/lib/jvm/java-8-openjdk-arm64"
 
-ENV CLUSTER_CONF="/home/nacos/conf/cluster.conf" \
+ENV CLUSTER_CONF="${BASE_DIR}/conf/cluster.conf" \
 		FUNCTION_MODE="all" \
 		MODE="cluster" \
     JVM_XMS="1g" \
