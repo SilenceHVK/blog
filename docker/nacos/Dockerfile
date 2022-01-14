@@ -38,7 +38,7 @@ RUN wget https://github.com/alibaba/nacos/releases/download/${NACOS_VERSION}/${T
 		&& rm -rf ${TAR} ${BASE_DIR}/bin/* ${BASE_DIR}/conf/*.properties ${BASE_DIR}/conf/*.example ${BASE_DIR}/conf/nacos-mysql.sql
 
 ADD startup.sh ${BASE_DIR}/bin/startup.sh
-ADD application.properties ${BASE_DIR}/application.properties
+ADD application.properties ${BASE_DIR}/conf/application.properties
 
 EXPOSE 8848
 ENTRYPOINT ["nacos/bin/startup.sh"]
