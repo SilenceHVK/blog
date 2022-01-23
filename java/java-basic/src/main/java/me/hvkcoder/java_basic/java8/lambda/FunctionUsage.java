@@ -14,17 +14,17 @@ import java.util.function.Function;
  * @since 2020/7/25
  */
 public class FunctionUsage {
-  public static void main(String[] args) {
-    List<String> languages = Arrays.asList("C", "C#", "C++", "Java", "Golang", "Python", "Ruby");
-    List<Integer> result = map(languages, s -> s.length());
-    System.out.println(result);
-  }
+	public static void main(String[] args) {
+		List<String> languages = Arrays.asList("C", "C#", "C++", "Java", "Golang", "Python", "Ruby");
+		List<Integer> result = map(languages, String::length);
+		System.out.println(result);
+	}
 
-  public static <T, R> List<R> map(List<T> lists, Function<T, R> func) {
-    List<R> result = new ArrayList<>();
-    for (T t : lists) {
-      result.add(func.apply(t));
-    }
-    return result;
-  }
+	public static <T, R> List<R> map(List<T> lists, Function<T, R> func) {
+		List<R> result = new ArrayList<>();
+		for (T t : lists) {
+			result.add(func.apply(t));
+		}
+		return result;
+	}
 }

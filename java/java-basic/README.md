@@ -1,6 +1,6 @@
 ## Java 8
 
-####  常用的函数式接口
+#### 常用的函数式接口
 
 | 接口                | 方法              | 使用案例               |
 | ------------------- | ----------------- | ---------------------- |
@@ -10,6 +10,28 @@
 | Supplier<T>         | T get();          | 创建一个对象           |
 | BiFunction<T, U, R> | R apply(T t, U u) | 合并或比较两个对象     |
 
+#### Stream 流操作
+
+##### Stream 创建
+|      | 相关方法                                                               |
+|------|--------------------------------------------------------------------|
+| 集合   | Collection.stream/parallelStream                                   |
+| 数组   | Arrays.stream                                                      |
+| 数字   | IntStream/LongStream.range/rangeClosed   Random.ints/longs/doubles |
+| 自己创建 | Stream.generate/iterate                                            |
+
+##### Stream 中间操作
+|         | 相关方法                                                                 |
+|---------|----------------------------------------------------------------------|
+| 无状态操作 | map/mapToXxx <br/> flatMap/flatMapToXxx <br/> filter <br/> unordered |
+| 有状态操作 | distinct <br/> sorted <br/> limit/skip                               |
+
+##### Stream 终止操作
+|        | 相关方法                                                                           |
+|--------|--------------------------------------------------------------------------------|
+| 非短路操作 | forEach/forEacheOrdered <br/> collect/toArray <br/> reduce <br/> min/max/count |
+| 短路操作 | findFirst/findAny <br/> allMatch/anyMatch/ noneMatch                           |
+
 
 ## Java 中的注解
 
@@ -18,6 +40,7 @@
 #### Java SE5 内置三种标准注解
 
 定义在 java.lang 中的注解：
+
 - @Override：表示当前的方法定义将覆盖父类中的方法；
 - @Deprecated：被标注的元素，编译器会发出警告信息；
 - @SuppressWarnings：关闭不当的编译器警告信息；
@@ -29,13 +52,15 @@
 注解的定义与接口的定义类似，事实上，注解也将会编译成 class 文件
 
 ```java
+
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface UseCase {
-    // 定义注解元素
-    public int id();
-    // 定义注解元素，并附默认值
-    public String description() default "no description";
+	// 定义注解元素
+	public int id();
+
+	// 定义注解元素，并附默认值
+	public String description() default "no description";
 }
 ```
 
@@ -47,7 +72,8 @@ public @interface UseCase {
 - Annotation
 - 以上类型的数组
 
-如果使用其他类型，编译器就会报错，同样也不允许使用任何包装类型。注解类型不能有不确定的值，也就是说，必须有默认值 或 使用注解时提供的元素的值；对于非基本类型的注解元素，无论是在源代码中声明时，或是在注解接口中定义默认值时，都不能使用 null 作为其值。
+如果使用其他类型，编译器就会报错，同样也不允许使用任何包装类型。注解类型不能有不确定的值，也就是说，必须有默认值 或 使用注解时提供的元素的值；对于非基本类型的注解元素，无论是在源代码中声明时，或是在注解接口中定义默认值时，都不能使用
+null 作为其值。
 
 #### Java 提供四种元注解
 
@@ -66,13 +92,13 @@ public @interface UseCase {
 
 ```java
 public static void trackUseCases(Class<?> cl) {
-    // 通过反射 返回类中除继承的所有方法
-    for(Method method : cl.getDeclaredMethods()) {
-        // 通过反射 返回指定类型的注解对象
-        UseCase annotation = method.getAnnotation(UseCase.class);
-        if(annotation)！= null) {
-            System.out.printf("Found Use Case: %d, %s\n", annotation.id(), annoation.description());
-        }
+  // 通过反射 返回类中除继承的所有方法
+  for(Method method : cl.getDeclaredMethods()) {
+    // 通过反射 返回指定类型的注解对象
+    UseCase annotation = method.getAnnotation(UseCase.class);
+    if(annotation != null) {
+      System.out.printf("Found Use Case: %d, %s\n", annotation.id(), annoation.description());
     }
+  }
 }
 ```
