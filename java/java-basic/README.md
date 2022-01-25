@@ -13,6 +13,7 @@
 #### Stream 流操作
 
 ##### Stream 创建
+
 |      | 相关方法                                                               |
 |------|--------------------------------------------------------------------|
 | 集合   | Collection.stream/parallelStream                                   |
@@ -21,17 +22,27 @@
 | 自己创建 | Stream.generate/iterate                                            |
 
 ##### Stream 中间操作
+
 |         | 相关方法                                                                 |
 |---------|----------------------------------------------------------------------|
 | 无状态操作 | map/mapToXxx <br/> flatMap/flatMapToXxx <br/> filter <br/> unordered |
 | 有状态操作 | distinct <br/> sorted <br/> limit/skip                               |
 
 ##### Stream 终止操作
+
 |        | 相关方法                                                                           |
 |--------|--------------------------------------------------------------------------------|
 | 非短路操作 | forEach/forEacheOrdered <br/> collect/toArray <br/> reduce <br/> min/max/count |
 | 短路操作 | findFirst/findAny <br/> allMatch/anyMatch/ noneMatch                           |
 
+##### Stream 运行机制
+
+1. 所有操作是链式调用，一个元素只迭代一次
+2. 每个中间操作返回一个新的流对象，流里面有一个属性 `sourceStage` 执行链表头，即 `Head`
+3. 在 Head 中有个 `nextStage` 依次类推
+4. 有状态操作（一般有多个参数，即依赖其他参数）会把无状态操作（只有一个参数）中间截断
+5. 并行环境下，有状态的中间操作不一定能并行操作
+6. parallel/sequential 也是中间操作，但是他们不创建流，他们只修改 Head 的并行标准
 
 ## Java 中的注解
 
@@ -91,14 +102,14 @@ null 作为其值。
 大部分情况下，需要我们自己编写处理器来处理注解，其核心则是使用 Java 的反射机制来处理注解。
 
 ```java
-public static void trackUseCases(Class<?> cl) {
-  // 通过反射 返回类中除继承的所有方法
-  for(Method method : cl.getDeclaredMethods()) {
-    // 通过反射 返回指定类型的注解对象
-    UseCase annotation = method.getAnnotation(UseCase.class);
-    if(annotation != null) {
-      System.out.printf("Found Use Case: %d, %s\n", annotation.id(), annoation.description());
-    }
-  }
-}
+public static void trackUseCases(Class<?> cl){
+	// 通过反射 返回类中除继承的所有方法
+	for(Method method:cl.getDeclaredMethods()){
+	// 通过反射 返回指定类型的注解对象
+	UseCase annotation=method.getAnnotation(UseCase.class);
+	if(annotation!=null){
+	System.out.printf("Found Use Case: %d, %s\n",annotation.id(),annoation.description());
+	}
+	}
+	}
 ```
