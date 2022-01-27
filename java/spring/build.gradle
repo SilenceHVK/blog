@@ -26,8 +26,12 @@ subprojects {
 	}
 
 	dependencies {
-		if (!project.name.equals("spring-cloud-gateway")) {
+		// 定义 webFlux 项目集合名称
+		def webFluxProject = ["spring-cloud-gateway", "spring-webflux"];
+		if (!webFluxProject.contains(project.name)) {
 			implementation 'org.springframework.boot:spring-boot-starter-web'
+		} else {
+			implementation 'org.springframework.boot:spring-boot-starter-webflux'
 		}
 	}
 }
