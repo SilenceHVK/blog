@@ -1,5 +1,6 @@
 rootProject.name = 'java'
 include 'java-basic'
+include 'scala-basic'
 include 'bigdata'
 include 'vertx'
 include 'spring'
