@@ -3,7 +3,15 @@ buildscript {
 		hadoopVersion = '3.3.0'
 		avroVersion = '1.8.2'
 		parquetVersion = '1.11.0'
+		scala = '2.11.12'
+		spark = '2.3.4'
+		jacksonModuleScala = '2.13.1'
 	}
+}
+
+plugins {
+	id 'scala'
+	id 'java'
 }
 
 dependencies {
@@ -14,4 +22,9 @@ dependencies {
 	implementation "org.apache.parquet:parquet-column:$parquetVersion"
 	implementation "org.apache.parquet:parquet-hadoop:$parquetVersion"
 	implementation "org.apache.parquet:parquet-avro:$parquetVersion"
+
+	implementation "org.scala-lang:scala-library:$scala"
+	implementation "org.apache.spark:spark-core_2.11:$spark"
+
+	implementation "com.fasterxml.jackson.module:jackson-module-scala_2.11:$jacksonModuleScala"
 }
