@@ -18,4 +18,4 @@ include 'dubbo:common'
 include 'dubbo:consumer'
 include 'dubbo:provider'
 include 'log4j2-poc'
-
+include 'mybatis'
