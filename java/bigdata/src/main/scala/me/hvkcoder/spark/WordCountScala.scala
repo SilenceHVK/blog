@@ -1,4 +1,4 @@
-package me.hvkcoder.park
+package me.hvkcoder.spark
 
 import org.apache.spark.{SparkConf, SparkContext}
 

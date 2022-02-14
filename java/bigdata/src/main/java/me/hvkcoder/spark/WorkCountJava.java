@@ -1,4 +1,4 @@
-package me.hvkcoder.park;
+package me.hvkcoder.spark;
 
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaPairRDD;
@@ -8,8 +8,6 @@ import org.apache.spark.api.java.function.*;
 import scala.Tuple2;
 
 import java.util.Arrays;
-import java.util.Iterator;
-import java.util.Objects;
 
 /**
  * Spark 实现单词统计
