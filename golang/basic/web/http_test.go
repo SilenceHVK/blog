@@ -1,7 +1,9 @@
 package web
 
 import (
+	"html/template"
 	"net/http"
+	"os"
 	"testing"
 )
 
@@ -21,4 +23,25 @@ func TestCreateServer(t *testing.T) {
 func TestGeneratorSSL(t *testing.T) {
 	//max := new(big.Int).Lsh(big.NewInt(1), 128)
 	//serialNumber, _ := rand.Int(rand.Reader, max)
+}
+
+// 加载模板
+type People struct {
+	Name string
+	Age  int
+}
+
+func TestLoadTemplate(t *testing.T) {
+	http.HandleFunc("/", func(writer http.ResponseWriter, request *http.Request) {
+		path, _ := os.Getwd()
+		index, _ := template.ParseFiles(path + "/template/index.html")
+		index.Execute(writer, &People{
+			Name: "H_VK",
+			Age:  18,
+		})
+	})
+	err := http.ListenAndServe(":9999", nil)
+	if err != nil {
+		t.Log(err)
+	}
 }
