@@ -1,6 +1,11 @@
 package me.hvkcoder.java_basic.io.reactor.single;
 
+import io.netty.buffer.ByteBuf;
+import lombok.SneakyThrows;
+
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
@@ -15,54 +20,68 @@ import java.util.Scanner;
  */
 public class ReactorSingleClient {
   public static void main(String[] args) throws IOException {
-    final ByteBuffer buffer = ByteBuffer.allocate(1024);
-    Selector selector = Selector.open();
-    SocketChannel socketChannel = SocketChannel.open(new InetSocketAddress(9999));
-    socketChannel.configureBlocking(false);
-    socketChannel.register(selector, SelectionKey.OP_READ | SelectionKey.OP_WRITE);
-    while (!socketChannel.finishConnect()) {}
-    System.out.println("已连接服务器");
+    new ReactorSingleClient().connect("localhost", 9999);
+  }
 
-    while (selector.select() > 0) {
-      final Iterator<SelectionKey> iterator = selector.selectedKeys().iterator();
-      while (iterator.hasNext()) {
-        final SelectionKey selectionKey = iterator.next();
+  private volatile boolean running = false;
+  private Selector selector;
 
-        if (selectionKey.isValid() && selectionKey.isReadable()) {
-          final SocketChannel channel = (SocketChannel) selectionKey.channel();
-          if (channel != null) {
-            int dataLength = 0;
-            while ((dataLength = socketChannel.read(buffer)) > 0) {
-              System.out.println(
-                  "客户端 ["
-                      + socketChannel.getRemoteAddress()
-                      + "]："
-                      + new String(buffer.array(), 0, dataLength));
-              buffer.clear();
-            }
-            channel.configureBlocking(false);
-            channel.register(selector, SelectionKey.OP_WRITE);
-          }
+  public ReactorSingleClient() throws IOException {
+    this.selector = Selector.open();
+    this.running = true;
+  }
+
+  public void connect(String host, int port) throws IOException {
+    try (SocketChannel socketChannel = SocketChannel.open()) {
+      socketChannel.configureBlocking(false);
+      socketChannel.connect(new InetSocketAddress(host, port));
+      socketChannel.register(selector, SelectionKey.OP_CONNECT, ByteBuffer.allocate(1024));
+      while (running) {
+        if (selector.select() <= 0) continue;
+        Iterator<SelectionKey> keyIterator = selector.selectedKeys().iterator();
+        while (keyIterator.hasNext()) {
+          handle(keyIterator.next());
+          keyIterator.remove();
         }
-
-        if (selectionKey.isValid() && selectionKey.isWritable()) {
-          final SocketChannel channel = (SocketChannel) selectionKey.channel();
-          if (channel != null) {
-            System.out.print("请输入发送内容：");
-            final Scanner scanner = new Scanner(System.in);
-            if (scanner.hasNext()) {
-              buffer.put(scanner.next().getBytes());
-              buffer.flip();
-              channel.write(buffer);
-              buffer.clear();
-            }
-            channel.configureBlocking(false);
-            channel.register(selector, SelectionKey.OP_READ);
-          }
-        }
-
-        iterator.remove();
       }
     }
+  }
+
+  private void handle(SelectionKey selectionKey) throws IOException {
+    SocketChannel socketChannel = (SocketChannel) selectionKey.channel();
+    if (selectionKey.isValid() && selectionKey.isConnectable()) {
+      if (socketChannel.isConnectionPending()) {
+        socketChannel.finishConnect();
+        new Thread(() -> {
+					try(BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))){
+						while(true){
+							String message = reader.readLine();
+							if ("bye".equals(message)){
+								selectionKey.cancel();
+								socketChannel.close();
+								this.running  = false;
+								break;
+							}
+							socketChannel.write(ByteBuffer.wrap(message.getBytes()));
+						}
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}).start();
+      }
+      selectionKey.interestOps(SelectionKey.OP_READ);
+    }
+
+    if (selectionKey.isValid() && selectionKey.isReadable()) {
+			try{
+				ByteBuffer buffer = (ByteBuffer) selectionKey.attachment();
+				int length = socketChannel.read(buffer);
+        System.out.println("服务端 => "+ new String(buffer.array(), 0, length));
+				buffer.clear();
+			}catch (Exception exception){
+				selectionKey.cancel();
+				socketChannel.close();
+			}
+		}
   }
 }
