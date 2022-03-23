@@ -6,14 +6,15 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/SilenceHVK/blog/golang/go-kit/endpoint"
+	"github.com/gorilla/mux"
 	"net/http"
 	"strconv"
 )
 
 // DecodeUserServiceRequest 对用户服务请求解码
 func DecodeUserServiceRequest(ctx context.Context, request *http.Request) (interface{}, error) {
-	uid := request.URL.Query().Get("uid")
-	if uid != "" {
+	vars := mux.Vars(request)
+	if uid, ok := vars["uid"]; ok {
 		id, _ := strconv.Atoi(uid)
 		return endpoint.UserRequest{
 			Uid: id,
