@@ -7,6 +7,7 @@ import me.hvkcoder.spring.custom.annotation.Scope;
 import me.hvkcoder.spring.custom.aware.ApplicationContextAware;
 import me.hvkcoder.spring.custom.aware.Aware;
 import me.hvkcoder.spring.custom.aware.BeanNameAware;
+import me.hvkcoder.spring.custom.init.InitializingBean;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
@@ -85,7 +86,16 @@ public class AnnotationConfigApplicationContext implements ApplicationContext {
 					((ApplicationContextAware)beanInstance).setApplicationContext(this);
 				}
 			}
-			
+
+			// 执行自定义的初始化 Bean 属性设置方法
+			if (beanInstance instanceof InitializingBean){
+				try {
+					((InitializingBean)beanInstance).afterPropertiesSet();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+
 			earlySingletonObjects.remove(beanName);
 			singletonObjects.put(beanName, beanInstance);
 		});
