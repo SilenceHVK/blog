@@ -21,5 +21,8 @@ public class IoCApplication {
 		OrderService orderService = applicationContext.getBean(OrderService.class);
     System.out.println(orderService);
     System.out.println(orderService.getUserService());
+
+    System.out.println(userService.getBeanName());
+    System.out.println(orderService.getApplicationContext());
 	}
 }

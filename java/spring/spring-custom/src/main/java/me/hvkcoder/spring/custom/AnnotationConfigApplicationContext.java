@@ -4,6 +4,9 @@ import me.hvkcoder.spring.custom.annotation.Autowired;
 import me.hvkcoder.spring.custom.annotation.Component;
 import me.hvkcoder.spring.custom.annotation.ComponentScan;
 import me.hvkcoder.spring.custom.annotation.Scope;
+import me.hvkcoder.spring.custom.aware.ApplicationContextAware;
+import me.hvkcoder.spring.custom.aware.Aware;
+import me.hvkcoder.spring.custom.aware.BeanNameAware;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
@@ -19,19 +22,27 @@ import java.util.concurrent.ConcurrentHashMap;
 public class AnnotationConfigApplicationContext implements ApplicationContext {
 
 	/**
-	 * 存储完整的单例 Bean
-	 */
-	private ConcurrentHashMap<String, Object> singletonObjects = new ConcurrentHashMap<>();
-
-	/**
 	 * 存储 BeanDefinition
 	 */
-	private ConcurrentHashMap<String, BeanDefinition> beanDefinitionMap  = new ConcurrentHashMap<>();
+	private final ConcurrentHashMap<String, BeanDefinition> beanDefinitionMap  = new ConcurrentHashMap<>();
 
 	/**
-	 * 存储半成品 Bean
+	 * 存储完整的单例 Bean - 即 Spring 循环依赖的 一级缓存（singletonObjects）
+	 * 存储经过完整生命周期的 Bean 对象
 	 */
-	private ConcurrentHashMap<String, Object> earlySingletonObjects = new ConcurrentHashMap<>();
+	private final ConcurrentHashMap<String, Object> singletonObjects = new ConcurrentHashMap<>();
+
+	/**
+	 * 存储半成品 Bean - 即 Spring 循环依赖的 二级缓存（earlySingletonObjects）
+	 *
+	 */
+	private final ConcurrentHashMap<String, Object> earlySingletonObjects = new ConcurrentHashMap<>();
+
+	/**
+	 * 存储创建 Bean 的工厂对象 - 即 Spring 循环依赖的 三级缓存（singletonFactories）
+	 *
+	 */
+	//	private final ConcurrentHashMap<String, ObjectFactory<?>> singletonFactories = new ConcurrentHashMap<>();
 
   public AnnotationConfigApplicationContext(Class<?> configClass) {
 		scan(configClass);
@@ -64,6 +75,17 @@ public class AnnotationConfigApplicationContext implements ApplicationContext {
 					}
 				}
 			});
+
+			// 判断该类是否实现了 Aware 的子接口，如果实现则设置依赖
+			if (beanInstance instanceof Aware){
+				if (beanInstance instanceof BeanNameAware){
+					((BeanNameAware)beanInstance).setBeanName(beanName);
+				}
+				if (beanInstance instanceof ApplicationContextAware){
+					((ApplicationContextAware)beanInstance).setApplicationContext(this);
+				}
+			}
+			
 			earlySingletonObjects.remove(beanName);
 			singletonObjects.put(beanName, beanInstance);
 		});
