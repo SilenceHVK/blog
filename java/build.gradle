@@ -5,7 +5,7 @@ allprojects {
 
 subprojects {
 	apply plugin: 'java'
-	sourceCompatibility = 1.8
+	sourceCompatibility = 17
 
 	repositories {
 		maven { url 'https://maven.aliyun.com/repository/public/' }
@@ -20,7 +20,7 @@ subprojects {
 		implementation group: 'cn.hutool', name: 'hutool-all', version: '5.3.10'
 
 		// https://mvnrepository.com/artifact/org.projectlombok/lombok
-		implementation group: 'org.projectlombok', name: 'lombok', version: '1.18.10'
+		implementation group: 'org.projectlombok', name: 'lombok', version: '1.18.22'
 
 		// 日志输出
 		implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.10'
