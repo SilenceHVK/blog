@@ -3,9 +3,6 @@ buildscript {
 		hadoopVersion = '3.3.0'
 		avroVersion = '1.8.2'
 		parquetVersion = '1.11.0'
-		scala = '2.11.12'
-		spark = '2.3.4'
-		jacksonModuleScala = '2.13.1'
 	}
 }
 
@@ -13,6 +10,8 @@ plugins {
 	id 'scala'
 	id 'java'
 }
+
+sourceCompatibility = 1.8
 
 dependencies {
 	implementation "org.apache.hadoop:hadoop-client:$hadoopVersion"
@@ -23,8 +22,9 @@ dependencies {
 	implementation "org.apache.parquet:parquet-hadoop:$parquetVersion"
 	implementation "org.apache.parquet:parquet-avro:$parquetVersion"
 
-	implementation "org.scala-lang:scala-library:$scala"
-	implementation "org.apache.spark:spark-core_2.11:$spark"
-
-	implementation "com.fasterxml.jackson.module:jackson-module-scala_2.11:$jacksonModuleScala"
+	// https://mvnrepository.com/artifact/org.scala-lang/scala-library
+	implementation group: 'org.scala-lang', name: 'scala-library', version: '2.13.8'
+	// https://mvnrepository.com/artifact/org.apache.spark/spark-core
+	implementation group: 'org.apache.spark', name: 'spark-core_2.13', version: '3.2.1'
+	
 }
