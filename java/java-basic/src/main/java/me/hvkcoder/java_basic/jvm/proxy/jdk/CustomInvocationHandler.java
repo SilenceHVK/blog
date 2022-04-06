@@ -1,4 +1,4 @@
-package me.hvkcoder.java_basic.jvm.proxy;
+package me.hvkcoder.java_basic.jvm.proxy.jdk;
 
 import java.lang.reflect.Method;
 

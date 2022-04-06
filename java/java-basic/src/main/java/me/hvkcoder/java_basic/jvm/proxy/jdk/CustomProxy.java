@@ -1,4 +1,4 @@
-package me.hvkcoder.java_basic.jvm.proxy;
+package me.hvkcoder.java_basic.jvm.proxy.jdk;
 
 
 import javax.tools.JavaCompiler;
@@ -62,7 +62,7 @@ public class CustomProxy {
 	private static File generatorProxyJava(Class<?>[] interfaces) {
 		File classFile = new File(CustomProxy.class.getResource("").getPath() + ProxyName + ".java");
 		StringBuffer sb = new StringBuffer();
-		sb.append("package me.hvkcoder.java_basic.jvm.proxy;" + ln)
+		sb.append("package me.hvkcoder.java_basic.jvm.proxy.jdk;" + ln)
 			.append("import java.lang.reflect.Method;" + ln)
 			.append("import java.lang.reflect.Parameter;" + ln)
 			.append("public final class $Proxy0 implements ");
