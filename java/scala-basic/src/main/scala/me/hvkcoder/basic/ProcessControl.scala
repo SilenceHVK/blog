@@ -1,5 +1,8 @@
 package me.hvkcoder.basic
 
+import scala.language.postfixOps
+import scala.util.control.Breaks.{break, breakable}
+
 // Scala 流程控制
 object ProcessControl {
 	def main(args: Array[String]): Unit = {
@@ -27,6 +30,23 @@ object ProcessControl {
 		// Scala 循环中没有 break，可以通过循环逻辑进行判断
 		for (i <- (1 to 100) if (i % 2 == 0)) {
 			println(i)
+		}
+		// Scala 中一切皆是对象，因此通过调用 break() 抛出 BreakException 异常来终止循环
+		var n = 0
+		breakable { // breakable 类似于 Java中的 try-catch
+			while (n <= 20) {
+				n += 1
+				if (n == 8) {
+					break()
+				}
+			}
+		}
+		println(n)
+
+		println("==========================================")
+		// 倒序循环
+		for (n <- 1 to 3 reverse) {
+			println(n)
 		}
 		println("==========================================")
 		// 使用 Scala for 循环实现九九乘法表
