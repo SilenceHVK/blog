@@ -3,6 +3,9 @@ buildscript {
 		hadoopVersion = '3.3.0'
 		avroVersion = '1.8.2'
 		parquetVersion = '1.11.0'
+		scalaVersion = '2.12'
+		sparkVersion = '3.2.1'
+		flinkVersion = '1.14.4'
 	}
 }
 
@@ -22,9 +25,14 @@ dependencies {
 	implementation "org.apache.parquet:parquet-hadoop:$parquetVersion"
 	implementation "org.apache.parquet:parquet-avro:$parquetVersion"
 
-	// https://mvnrepository.com/artifact/org.scala-lang/scala-library
-	implementation group: 'org.scala-lang', name: 'scala-library', version: '2.13.8'
-	// https://mvnrepository.com/artifact/org.apache.spark/spark-core
-	implementation group: 'org.apache.spark', name: 'spark-core_2.13', version: '3.2.1'
-	
+	implementation "org.scala-lang:scala-library:$scalaVersion.8"
+	implementation "org.apache.spark:spark-core_$scalaVersion:$sparkVersion"
+
+	implementation "org.apache.flink:flink-java:$flinkVersion"
+	implementation "org.apache.flink:flink-streaming-java_$scalaVersion:$flinkVersion"
+	implementation "org.apache.flink:flink-scala_$scalaVersion:$flinkVersion"
+	implementation "org.apache.flink:flink-streaming-scala_$scalaVersion:$flinkVersion"
+	implementation "org.apache.flink:flink-clients_$scalaVersion:$flinkVersion"
+
+
 }
