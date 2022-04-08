@@ -11,11 +11,14 @@ class BasicScala(var sex: String) {
 	// val 定义一个常量
 	val PI = 3.1415926
 
+	// 定义私有变量，即只能类内部访问
+	private[this] var password: String = _
+
 	// 定义构造函数
 	def this(name: String, sex: String) {
 		// 在自定义构造函数中必须调用默认构造方法
 		this(sex)
-		this.name = name;
+		this.name = name
 	}
 
 	// 执行顺序 => 1
@@ -28,6 +31,11 @@ class BasicScala(var sex: String) {
 	}
 	// 执行顺序 => 2
 	println("class end.")
+
+
+	def apply(): Unit = {
+		println("class apply......")
+	}
 }
 
 // object 类似于 java 中的 static
@@ -37,12 +45,23 @@ object BasicScala {
 	// 执行顺序 => 3
 	println("object start.")
 
+	def apply(): Unit = {
+		// 一般是在都是 object apply 中实例对象
+		println("object apply......")
+	}
+
 	// Unit 类似于 java 中的 void
 	def main(args: Array[String]): Unit = {
 		// 执行顺序 => 5
 		println("Hello  Scala")
 		// 执行顺序 => 6
 		people.sayHi()
+
+		// 使用 类名() ==> object.apply()
+		val objectBasicScala = BasicScala()
+		// 使用 对象名() ==> class.apply()
+		val classBasicScala = new BasicScala("男")
+		classBasicScala()
 	}
 	// 执行顺序 => 4
 	println("object end.")
