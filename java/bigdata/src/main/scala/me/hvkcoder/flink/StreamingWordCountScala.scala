@@ -3,7 +3,7 @@ package me.hvkcoder.flink
 import org.apache.flink.api.scala.createTypeInformation
 import org.apache.flink.streaming.api.scala.StreamExecutionEnvironment
 
-object StreamingWorkCountScala {
+object StreamingWordCountScala {
 	def main(args: Array[String]): Unit = {
 		// 获取上下文
 		val env = StreamExecutionEnvironment.getExecutionEnvironment

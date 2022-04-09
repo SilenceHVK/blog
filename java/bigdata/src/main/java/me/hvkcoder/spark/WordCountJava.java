@@ -15,7 +15,7 @@ import java.util.Arrays;
  * @author h_vk
  * @since 2022/2/11
  */
-public class WorkCountJava {
+public class WordCountJava {
   public static void main(String[] args) {
     SparkConf sparkConf = new SparkConf();
     sparkConf.setMaster("local"); // 设置单机运行

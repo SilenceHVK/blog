@@ -2,7 +2,7 @@ package me.hvkcoder.flink
 
 import org.apache.flink.api.scala.{ExecutionEnvironment, createTypeInformation}
 
-object BatchWorkCountScala {
+object BatchWordCountScala {
 	def main(args: Array[String]): Unit = {
 		// 获取上下文
 		val env = ExecutionEnvironment.getExecutionEnvironment

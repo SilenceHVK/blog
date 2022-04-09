@@ -12,7 +12,7 @@ import java.util.Arrays;
  * @author h_vk
  * @since 2022/4/6
  */
-public class StreamingWorkCountJava {
+public class StreamingWordCountJava {
 	public static void main(String[] args) throws Exception {
 		// 获取上下文
 		StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
