@@ -1,4 +1,6 @@
-package me.hvkcoder.java_basic.juc.thread;/**
+package me.hvkcoder.java_basic.juc.thread;
+
+/**
  * @author h_vk
  * @since 2022/4/12
  */
