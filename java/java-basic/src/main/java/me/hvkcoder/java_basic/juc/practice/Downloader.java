@@ -55,7 +55,7 @@ public class Downloader {
 
 	public static void main(String[] args) {
 
-		try{
+		try {
 			// 获取文件下载链接
 			String url = "";
 			if (args.length == 0) {
@@ -77,7 +77,7 @@ public class Downloader {
 			for (int i = 0; i < THREAD_NUM; i++) {
 				long startPos = chunkSize * i;
 				long endPos = startPos + chunkSize;
-				if (i == THREAD_NUM -1) {
+				if (i == THREAD_NUM - 1) {
 					endPos = 0;
 				}
 				if (i != 0) {
@@ -95,7 +95,7 @@ public class Downloader {
 			countDownLatch.await();
 
 			// 合并文件，并删除文件
-			if (merge(DOWNLOAD_PATH + fileName)){
+			if (merge(DOWNLOAD_PATH + fileName)) {
 				deleteTmp(DOWNLOAD_PATH + fileName);
 			}
 		} catch (InterruptedException e) {
@@ -123,6 +123,7 @@ public class Downloader {
 
 	/**
 	 * 获取文件大小
+	 *
 	 * @param url
 	 * @return
 	 */
@@ -132,7 +133,7 @@ public class Downloader {
 			httpURLConnection = getHttpURLConnection(url);
 		} catch (IOException e) {
 			e.printStackTrace();
-		}finally {
+		} finally {
 			if (httpURLConnection != null) {
 				httpURLConnection.disconnect();
 			}
@@ -183,8 +184,6 @@ public class Downloader {
 	}
 
 
-
-
 	/**
 	 * 下载进度
 	 */
@@ -216,7 +215,7 @@ public class Downloader {
 			final String downloadedSize = String.format("%.2f", this.downloadedSize.doubleValue() / MB);
 
 			// 计算下载速度
-			final int speed = (int)((this.downloadedSize.doubleValue() - prevDownloadedSize) / KB);
+			final int speed = (int) ((this.downloadedSize.doubleValue() - prevDownloadedSize) / KB);
 			this.prevDownloadedSize = this.downloadedSize.doubleValue();
 
 			// 计算剩余时间
@@ -224,7 +223,7 @@ public class Downloader {
 			final String remainTime = String.format("%.1f", remainSize / KB / speed);
 
 			System.out.print("\r");
-			System.out.print(String.format("已下载：%sMB/%sMB，速度：%dkb/s，剩余时间：%ss", downloadedSize, fileSize, speed, remainTime));
+			System.out.printf("已下载：%sMB/%sMB，速度：%dkb/s，剩余时间：%ss", downloadedSize, fileSize, speed, remainTime);
 		}
 	}
 
@@ -269,17 +268,17 @@ public class Downloader {
 			HttpURLConnection httpURLConnection = null;
 			try {
 				httpURLConnection = getHttpURLConnection(url);
-				httpURLConnection.setRequestProperty("RANGE", String.format("bytes=%d-", startPos) + (endPos == 0 ? "": endPos));
+				httpURLConnection.setRequestProperty("RANGE", String.format("bytes=%d-", startPos) + (endPos == 0 ? "" : endPos));
 				final File file = new File(DOWNLOAD_PATH + fileName + TMP_PREFIX + chunkIndex);
 				// 判断 chunk 文件是否存在
 				if (!file.exists()) {
-					try(
-							final BufferedInputStream inputStream = new BufferedInputStream(httpURLConnection.getInputStream());
-							final RandomAccessFile accessFile = new RandomAccessFile(file, "rw");
+					try (
+						final BufferedInputStream inputStream = new BufferedInputStream(httpURLConnection.getInputStream());
+						final RandomAccessFile accessFile = new RandomAccessFile(file, "rw");
 					) {
 						int length = -1;
 						final byte[] bytes = new byte[1024 * 100];
-						while((length = inputStream.read(bytes)) != -1) {
+						while ((length = inputStream.read(bytes)) != -1) {
 							downloadProgress.getDownloadedSize().add(length);
 							accessFile.write(bytes, 0, length);
 						}
@@ -287,7 +286,7 @@ public class Downloader {
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
-			}finally {
+			} finally {
 				countDownLatch.countDown();
 				if (httpURLConnection != null) {
 					httpURLConnection.disconnect();
