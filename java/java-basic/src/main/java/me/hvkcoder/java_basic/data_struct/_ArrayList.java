@@ -38,9 +38,10 @@ public class _ArrayList<E> extends _AbstractList<E> {
 	 */
 	@Override
 	public void clear() {
-		for (int i = 0; i < elementData.length; i++) {
-			elementData[i] = null;
-		}
+//		for (int i = 0; i < elementData.length; i++) {
+//			elementData[i] = null;
+//		}
+		Arrays.fill(elementData, null);
 		this.size = 0;
 	}
 
@@ -63,7 +64,7 @@ public class _ArrayList<E> extends _AbstractList<E> {
 	}
 
 	/**
-	 *  获取指定位置的元素值
+	 * 获取指定位置的元素值
 	 *
 	 * @param index
 	 * @return 获取 index 的元素值
