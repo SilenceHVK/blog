@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+
+<configuration>
+  <property>
+     <name>fs.defaultFS</name>
+	     <!--<value>hdfs://node-1:9000</value>-->
+     <value>hdfs://hadoop-cluster</value>
+  </property> 
+  <property>
+     <name>ha.zookeeper.quorum</name>
+     <value>node-1:2181,node-2:2181,node-3:2181</value>
+  </property>
+  <property>
+     <name>hadoop.tmp.dir</name>
+     <value>/home/h_vk/var/hadoop</value>
+  </property>
+</configuration>

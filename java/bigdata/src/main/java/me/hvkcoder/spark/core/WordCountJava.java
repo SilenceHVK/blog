@@ -1,4 +1,4 @@
-package me.hvkcoder.spark;
+package me.hvkcoder.spark.core;
 
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaPairRDD;
