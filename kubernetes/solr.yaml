@@ -1,0 +1,108 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: solr-webapp-pv
+spec:
+  accessModes: ['ReadWriteOnce']
+  capacity:
+    storage: 1Gi
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: solr-webapp-pv
+  nfs:
+    server: node-1
+    path: /home/h_vk/var/nfs/solr/webapp
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: solr-webapp-pvc
+spec:
+  accessModes: ['ReadWriteOnce']
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: solr-webapp-pv
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: solr-data-pv
+spec:
+  accessModes: ['ReadWriteOnce']
+  capacity:
+    storage: 1Gi
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: solr-data-pv
+  nfs:
+    server: node-1
+    path: /home/h_vk/var/nfs/solr/data
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: solr-data-pvc
+spec:
+  accessModes: ['ReadWriteOnce']
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: solr-data-pv
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: solr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: solr
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        app: solr
+    spec:
+      volumes:
+      - name: solr-webapp-persistent
+        persistentVolumeClaim:
+          claimName: solr-webapp-pvc
+      - name: solor-data-persistent
+        persistentVolumeClaim:
+          claimName: solr-data-pvc
+      containers:
+      - name: solr
+        image: solr:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8983
+        volumeMounts:
+        - name: solr-webapp-persistent
+          mountPath: /opt/solr-9.0.0/server/solr-webapp/webapp
+        - name: solor-data-persistent
+          mountPath: /var/solr/data
+        startupProbe:
+          httpGet:
+            port: 8983
+            path: /
+          initialDelaySeconds: 15
+          timeoutSeconds: 15
+          successThreshold: 1
+          failureThreshold: 1
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: solr-svc
+spec:
+  selector:
+    app: solr
+  type: NodePort
+  ports:
+  - name: solr-web
+    port: 8983
+    nodePort: 30893
