@@ -2,6 +2,7 @@ package datastruct
 
 import (
 	array_list "github.com/SilenceHVK/blog/golang/basic/datastruct/array-list"
+	"github.com/SilenceHVK/blog/golang/basic/datastruct/queue"
 	"github.com/SilenceHVK/blog/golang/basic/datastruct/stack"
 	"testing"
 )
@@ -38,4 +39,19 @@ func TestArrayStack(t *testing.T) {
 	t.Log(stack.Peek())
 	stack.Push("张三15")
 	t.Log(stack)
+}
+
+// 队列
+func TestQueue(t *testing.T) {
+	newQueue := queue.NewQueue[string](10)
+	newQueue.Push("Java")
+	newQueue.Push("Golang")
+	newQueue.Push("Python")
+	newQueue.Push("Rust")
+	newQueue.Push("Ruby")
+	t.Log(newQueue.Pop())
+	t.Log(newQueue.Pop())
+	t.Log(newQueue.Pop())
+	t.Log(newQueue.Pop())
+	t.Log(newQueue.Pop())
 }
