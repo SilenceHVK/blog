@@ -2,6 +2,7 @@ package datastruct
 
 import (
 	array_list "github.com/SilenceHVK/blog/golang/basic/datastruct/array-list"
+	"github.com/SilenceHVK/blog/golang/basic/datastruct/linked_list"
 	"github.com/SilenceHVK/blog/golang/basic/datastruct/queue"
 	"github.com/SilenceHVK/blog/golang/basic/datastruct/stack"
 	"testing"
@@ -54,4 +55,22 @@ func TestQueue(t *testing.T) {
 	t.Log(newQueue.Pop())
 	t.Log(newQueue.Pop())
 	t.Log(newQueue.Pop())
+}
+
+// 链表
+func TestLinkedList(t *testing.T) {
+	linkedList := linked_list.NewLinkedList[string]()
+	linkedList.Add("军长")
+	linkedList.Add("师长")
+	linkedList.Add("团长")
+	linkedList.AddByIndex("旅长", 2)
+	linkedList.Add("营长")
+	linkedList.Add("连长")
+	linkedList.Add("排长")
+	linkedList.Add("班长")
+	t.Log(linkedList)
+	t.Log(linkedList.GetNode(2))
+
+	t.Log(linkedList.RemoveByIndex(2))
+	t.Log(linkedList)
 }
