@@ -12,11 +12,15 @@ eureka:
   server:
     # 关闭保护机制
     enable-self-preservation: false
+    # 关闭一级缓存，让客户端直接去二级缓存中读取
+    use-read-only-response-cache: false
+    # 每秒监测一次，去除失效实例
+    eviction-interval-timer-in-ms: 1000
   client:
-#    # 是否向服务中心注册 默认 true
-#    register-with-eureka: false
-#    # 是否从注册中心检索服务 默认 true
-#    fetch-registry: false
+    #    # 是否向服务中心注册 默认 true
+    #    register-with-eureka: false
+    #    # 是否从注册中心检索服务 默认 true
+    #    fetch-registry: false
     service-url:
       # 注册中心地址
-      defaultZone: http://eureka1:8761/eureka/
+      defaultZone: http://eureka1:8761/eureka/,http://eureka1:8762/eureka/
