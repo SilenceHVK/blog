@@ -5,6 +5,9 @@ buildscript {
 		springCloudAlibabaVersion = '2021.0.1.0'
 		mysqlVersion = '8.0.25'
 	}
+	dependencies {
+		classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
+	}
 }
 
 plugins {
@@ -15,6 +18,7 @@ plugins {
 subprojects {
 	apply plugin: 'java'
 	apply plugin: 'maven-publish'
+	apply plugin: 'org.springframework.boot'
 	apply plugin: 'io.spring.dependency-management'
 
 	dependencyManagement {
@@ -32,6 +36,37 @@ subprojects {
 			implementation 'org.springframework.boot:spring-boot-starter-web'
 		} else {
 			implementation 'org.springframework.boot:spring-boot-starter-webflux'
+		}
+	}
+
+	// 提取项目文件
+	task extractFile() {
+		def target = "$buildDir/target"
+		delete "$buildDir"
+		doLast {
+			// 复制项目依赖的 Jar 包
+			copy {
+				from configurations.compileClasspath
+				into "$target/lib"
+			}
+			// 复制项目 Resources 中的文件至 conf
+			copy {
+				from "src/main/resources"
+				into "$target/conf"
+			}
+			// 复制项目 bin 文件
+			copy {
+				from "bin"
+				into "$target/bin"
+			}
+		}
+	}
+
+	// 将 jar 包打包至 lib 目录
+	tasks.withType(Jar) {
+		destinationDir(file("$buildDir/target/lib"))
+		doLast {
+			println "=================== ヾ(@^▽^@)ノ 项目打包完成 (*^▽^*) ==================="
 		}
 	}
 }
