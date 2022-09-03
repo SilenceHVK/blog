@@ -3,10 +3,12 @@ package me.hvkcoder.hadoop;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.*;
+import org.apache.hadoop.io.IOUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.time.LocalDateTime;
@@ -35,15 +37,17 @@ public class HDFS {
 	 */
 	@Before
 	public void connection2HDFS() throws IOException, InterruptedException {
-		// 设置配置文件
-		conf = new Configuration(true);
-		conf.set("fs.hdfs.impl", "org.apache.hadoop.hdfs.DistributedFileSystem");
-		conf.set("fs.file.impl", "org.apache.hadoop.fs.LocalFileSystem");
-		conf.set("dfs.replication", "1");
-		conf.set("dfs.client.use.datanode.hostname", "true");
+//		// 设置配置文件
+//		conf = new Configuration(true);
+//		conf.set("fs.hdfs.impl", "org.apache.hadoop.hdfs.DistributedFileSystem");
+//		conf.set("fs.file.impl", "org.apache.hadoop.fs.LocalFileSystem");
+//		conf.set("dfs.replication", "1");
+//		conf.set("dfs.client.use.datanode.hostname", "true");
+//
+//		// 获取文件系统
+//		fileSystem = FileSystem.get(URI.create(HDFS_ROOT_PATH), conf, "root");
 
-		// 获取文件系统
-		fileSystem = FileSystem.get(URI.create(HDFS_ROOT_PATH), conf, "root");
+		fileSystem = FileSystem.newInstance(new Configuration());
 	}
 
 	/**
@@ -52,7 +56,6 @@ public class HDFS {
 	@Test
 	public void mkdir() throws IOException {
 		final Path path = new Path("/test");
-
 		// 判断文件夹是否存在，如果不存在则创建，存在则删除
 		if (!fileSystem.exists(path)) {
 			fileSystem.mkdirs(path);
@@ -86,6 +89,87 @@ public class HDFS {
 			for (Path path : paths) fileSystem.copyFromLocalFile(false, path, desPath);
 		} finally {
 			log.info("文件上传成功~");
+		}
+	}
+
+	/**
+	 * 读取文件
+	 *
+	 * @throws IOException
+	 */
+	@Test
+	public void catFile() throws IOException {
+		try (FSDataInputStream fsDataInputStream = fileSystem.open(new Path("/hdfsapi/test/meta.properties"))) {
+			IOUtils.copyBytes(fsDataInputStream, System.out, 1024);
+		}
+	}
+
+	/**
+	 * 向文件写入内容
+	 *
+	 * @throws IOException
+	 */
+	@Test
+	public void writeFile() throws IOException {
+		try (FSDataOutputStream fsDataOutputStream = fileSystem.create(new Path("/hdfsapi/test/test.txt"))) {
+			fsDataOutputStream.writeUTF("Hello HDFS!");
+			fsDataOutputStream.flush();
+		}
+	}
+
+	/**
+	 * 上传大文件，并带有进度条
+	 *
+	 * @throws IOException
+	 */
+	@Test
+	public void putBigFile() throws IOException {
+		try (
+			FileInputStream fileInputStream = new FileInputStream("/Users/h_vk/Downloads/游戏开发/百万在线 大型游戏服务端开发 (罗培羽) (z-lib.org).pdf");
+			FSDataOutputStream outputStream = fileSystem.create(new Path("/hdfsapi/test/game.pdf"), () -> log.info("*"));
+		) {
+			IOUtils.copyBytes(fileInputStream, outputStream, 4096);
+		}
+	}
+
+	/**
+	 * 展示目录下所有文件
+	 *
+	 * @throws IOException
+	 */
+	@Test
+	public void listFiles() throws IOException {
+		FileStatus[] fileStatuses = fileSystem.listStatus(new Path("/hdfsapi/test"));
+		for (FileStatus fileStatus : fileStatuses) {
+			log.info("文件名称 => {}", fileStatus.getPath().getName());
+			log.info("文件路径 => {}", fileStatus.getPath().toUri().getPath());
+			log.info("副本数量 => {}", fileStatus.getReplication());
+			log.info("文件权限 => {}", fileStatus.getPermission());
+			log.info("文件大小 => {}", fileStatus.getLen());
+			log.info("是否为文件 => {}", fileStatus.isFile());
+			log.info("是否为文件夹 => {}", fileStatus.isDirectory());
+			log.info("--------------------------------");
+		}
+	}
+
+	/**
+	 * 递归展示目录信息
+	 *
+	 * @throws IOException
+	 */
+	@Test
+	public void listFilesRecursive() throws IOException {
+		RemoteIterator<LocatedFileStatus> remoteIterator = fileSystem.listFiles(new Path("/hdfsapi"), true);
+		while (remoteIterator.hasNext()) {
+			LocatedFileStatus locatedFileStatus = remoteIterator.next();
+			log.info("文件名称 => {}", locatedFileStatus.getPath().getName());
+			log.info("文件路径 => {}", locatedFileStatus.getPath().toUri().getPath());
+			log.info("副本数量 => {}", locatedFileStatus.getReplication());
+			log.info("文件权限 => {}", locatedFileStatus.getPermission());
+			log.info("文件大小 => {}", locatedFileStatus.getLen());
+			log.info("是否为文件 => {}", locatedFileStatus.isFile());
+			log.info("是否为文件夹 => {}", locatedFileStatus.isDirectory());
+			log.info("--------------------------------");
 		}
 	}
 
