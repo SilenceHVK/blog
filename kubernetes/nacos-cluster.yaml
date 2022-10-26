@@ -1,0 +1,77 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nacos-cm
+  namespace: development
+data:
+  NACOS_REPLICAS: "3"
+  SPRING_DATASOURCE_PLATFORM: "mysql"
+  MYSQL_SERVICE_HOST: "mysql-svc.database.svc.cluster.local"
+  MYSQL_SERVICE_PORT: "3306"
+  MYSQL_SERVICE_DB_NAME: "nacos_config"
+  MYSQL_SERVICE_USER: "root"
+  MYSQL_SERVICE_PASSWORD: "123456"
+  NACOS_SERVERS: "nacos-0.nacos-headless.development.svc.cluster.local nacos-1.nacos-headless.development.svc.cluster.local nacos-2.nacos-headless.development.svc.cluster.local"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nacos-headless
+  namespace: development
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+    - port: 8848
+      name: server
+      targetPort: 8848
+    - port: 9848
+      name: client-rpc
+      targetPort: 9848
+    - port: 9849
+      name: raft-rpc
+      targetPort: 9849
+    ## 兼容1.4.x版本的选举端口
+    - port: 7848
+      name: old-raft-rpc
+      targetPort: 7848
+  selector:
+    app: nacos
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nacos-svc
+  namespace: development
+spec:
+  type: NodePort
+  selector:
+    app: nacos
+  ports:
+  - name: nacos-ui
+    port: 8848
+    nodePort: 30184
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: nacos
+  namespace: development
+spec:
+  replicas: 3
+  serviceName: nacos-headless
+  selector:
+    matchLabels:
+      app: nacos
+  template:
+    metadata:
+      labels:
+        app: nacos
+    spec:
+      containers:
+      - name: nacos
+        image: hvkcoder/nacos-server:2.0.3
+        imagePullPolicy: IfNotPresent
+        envFrom:
+        - configMapRef:
+            name: nacos-cm
