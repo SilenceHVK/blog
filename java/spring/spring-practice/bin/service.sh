@@ -1,4 +1,12 @@
 #!/usr/bin/env bash
+
+#
+# +========================================================================+
+# | Author: Silence H_VK                                                   |
+# | Since: 2021-12-02                                                      |
+# +------------------------------------------------------------------------+
+#
+
 SERVICE_NAME="spring-practice"
 MAIN_CLASS=me.hvkcoder.spring.practice.PracticeApplication
 BASE_DIR=$(dirname $0)
