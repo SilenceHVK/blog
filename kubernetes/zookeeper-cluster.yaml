@@ -108,6 +108,8 @@ spec:
         - name: scripts
           mountPath: /scripts/entrypoint.sh
           subPath: entrypoint.sh
+        - name: data
+          mountPath: /data
         livenessProbe:
           tcpSocket:
             port: 2181
@@ -116,3 +118,13 @@ spec:
           periodSeconds: 2
           successThreshold: 1
           failureThreshold: 1
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+      namespace: development
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: "nfs-client"
+      resources:
+        requests:
+          storage: 2Gi
