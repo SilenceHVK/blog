@@ -11,6 +11,7 @@ data:
   MYSQL_SERVICE_DB_NAME: "nacos_config"
   MYSQL_SERVICE_USER: "root"
   MYSQL_SERVICE_PASSWORD: "123456"
+  MYSQL_SERVICE_DB_PARAM: "characterEncoding=utf8&connectTimeout=1000&socketTimeout=3000&autoReconnect=true&useSSL=false&allowPublicKeyRetrieval=true"
   NACOS_SERVERS: "nacos-0.nacos-headless.development.svc.cluster.local nacos-1.nacos-headless.development.svc.cluster.local nacos-2.nacos-headless.development.svc.cluster.local"
 ---
 apiVersion: v1
@@ -51,6 +52,9 @@ spec:
   - name: nacos-ui
     port: 8848
     nodePort: 30184
+  - port: 9848
+    name: client-rpc
+    nodePort: 31184
 ---
 apiVersion: apps/v1
 kind: StatefulSet
@@ -68,6 +72,11 @@ spec:
       labels:
         app: nacos
     spec:
+      initContainers:
+      - name: init-mysql
+        image: busybox
+        imagePullPolicy: IfNotPresent
+        command: ["/bin/bash", "-c", "until nslookup mysql-svc.database.svc.cluster.local; do echo waiting for mysql; sleep 2; done;"]
       containers:
       - name: nacos
         image: hvkcoder/nacos-server:2.0.3
