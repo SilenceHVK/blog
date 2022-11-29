@@ -5,4 +5,7 @@ dependencies {
 	// Nacos 依赖
 	implementation 'com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-discovery'
 	implementation 'com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-config'
+
+	// Spring Cloud Loadbalancer
+	implementation 'org.springframework.cloud:spring-cloud-starter-loadbalancer'
 }

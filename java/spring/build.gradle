@@ -1,8 +1,8 @@
 buildscript {
 	ext {
-		springBootVersion = '2.7.0'
-		springCloudVersion = '2021.0.2'
-		springCloudAlibabaVersion = '2021.0.1.0'
+		springBootVersion = '2.7.5'
+		springCloudVersion = '2021.0.5'
+		springCloudAlibabaVersion = '2021.0.4.0'
 		mysqlVersion = '8.0.25'
 	}
 	dependencies {
