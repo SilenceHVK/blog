@@ -30,3 +30,6 @@ spring:
 netty:
   host: 127.0.0.1
   port: 9001
+
+scheduler:
+  cron: 0/10 * * * * ?

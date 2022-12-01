@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.net.InetSocketAddress;
 
@@ -14,6 +15,7 @@ import java.net.InetSocketAddress;
  */
 @Slf4j
 @SpringBootApplication
+@EnableScheduling // 启动 Spring 定时任务
 public class PracticeApplication implements CommandLineRunner {
   @Value("${netty.host}")
   private String host;
