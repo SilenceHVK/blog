@@ -1,10 +1,10 @@
 # H-VK 技术文章
 
-![背景图片](https://i.postimg.cc/zfW4rPRX/bg1.jpg)
-
 感谢  [JetBrains](https://www.jetbrains.com/community/opensource/#support) 提供的开源授权支持
 
-![JetBrains Logo]([https://i.postimg.cc/zfW4rPRX/bg1.jpg](https://resources.jetbrains.com/storage/products/company/brand/logos/jetbrains-training-partner.png?_ga=2.132918670.1829843634.1670212012-894962586.1669083456&_gl=1*z69iy*_ga*ODk0OTYyNTg2LjE2NjkwODM0NTY.*_ga_9J976DJZ68*MTY3MDIxMjAxMi44LjEuMTY3MDIxMjExMS4wLjAuMA..))
+Thanks to [JetBrains](https://www.jetbrains.com/community/opensource/#support) for open source licensing support
+
+![JetBrains Logo](https://resources.jetbrains.com/storage/products/company/brand/logos/jetbrains-training-partner.png)
 
 
 ## 文章分类
