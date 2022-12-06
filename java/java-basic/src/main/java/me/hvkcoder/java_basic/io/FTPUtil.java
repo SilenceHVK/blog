@@ -6,7 +6,10 @@ import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPReply;
 
 import java.io.Closeable;
+import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.function.Consumer;
 
 
 /**
@@ -46,16 +49,57 @@ public class FTPUtil extends FTPClient implements Closeable {
 	@Override
 	public void close() throws IOException {
 		if (this.isConnected()) {
-			log.info("关闭.....");
+			log.info("--ftp连接已关闭--");
 			this.logout();
 			this.disconnect();
 		}
 	}
-	
+
+
+	/**
+	 * 递归文件
+	 *
+	 * @param ftpFiles
+	 * @param dirFunc
+	 * @param fileFunc
+	 * @throws IOException
+	 */
+	public void recursionFile(FTPFile[] ftpFiles, Consumer<String> dirFunc, Consumer<String> fileFunc) throws IOException {
+		// 获取当前工作目录
+		String workingDirectory = this.printWorkingDirectory();
+		Arrays.stream(ftpFiles).forEach(ftpFile -> {
+			try {
+				String fileName = ftpFile.getName();
+				if (ftpFile.isDirectory()) {
+					File changeDir = new File(workingDirectory, fileName);
+					dirFunc.accept(fileName);
+					// 切换下级目录
+					this.changeWorkingDirectory(changeDir.getAbsolutePath());
+					recursionFile(this.listFiles(), dirFunc, fileFunc);
+				} else {
+					fileFunc.accept(fileName);
+					// 返回上一级目录
+					this.changeToParentDirectory();
+				}
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+		});
+	}
+
+	/**
+	 * 递归文件
+	 *
+	 * @param dirFunc
+	 * @param fileFunc
+	 */
+	public void recursionFile(Consumer<String> dirFunc, Consumer<String> fileFunc) throws IOException {
+		recursionFile(this.listFiles(), dirFunc, fileFunc);
+	}
+
 	public static void main(String[] args) {
 		try (FTPUtil ftpUtil = new FTPUtil("master.cluster.local", 21, "root", "123456")) {
-			FTPFile[] ftpFiles = ftpUtil.listFiles();
-			System.out.println(ftpFiles.length);
+			ftpUtil.recursionFile(System.out::println, System.out::println);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
