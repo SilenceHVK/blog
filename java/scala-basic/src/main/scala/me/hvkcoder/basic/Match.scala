@@ -29,4 +29,39 @@ object Match {
 			case _ => "any"
 		}
 	}
+
+	// 数组的模式匹配
+	def greeting(array: Array[String]): Unit = {
+		array match {
+			case Array("zhangsan") => println("Hello 张三")
+			case Array(x, y) => println(s"Hello $x, $y")
+			case Array("zhangsan", _*) => println("Hello 张三 and Other")
+			case _ => println("Hello Other")
+		}
+	}
+
+	// 集合的模式匹配
+	def greeting(list: List[String]) = {
+		list match {
+			case "zhangsan" :: Nil => println("Hi, 张三")
+			case x :: y :: Nil => println(s"Hi, $x, $y")
+			case "zhangsan" :: tail => println("Hi，张三 and Other")
+			case _ => println("Hi everybody")
+		}
+	}
+
+	// 类的模式匹配
+	class Person
+	case class CTO(name:String, salary:String) extends Person
+	case class CFO(name:String, salary:String) extends Person
+	case class Employee(name:String, salary:String) extends Person
+
+	def caseClass(person: Person): Unit = {
+		person match {
+			case CTO(name:String, salary:String) => println(s"CTO name is $name, salary is $salary")
+			case Employee(name:String, salary:String) => println(s"Employee name is $name, salary is $salary")
+			case _ => println(s"Person Other")
+		}
+	}
+
 }
