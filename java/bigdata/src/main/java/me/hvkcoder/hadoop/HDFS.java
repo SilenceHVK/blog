@@ -4,15 +4,21 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.*;
 import org.apache.hadoop.io.IOUtils;
+import org.apache.hadoop.util.StringUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.HashMap;
 
 
 /**
@@ -170,6 +176,42 @@ public class HDFS {
 			log.info("是否为文件 => {}", locatedFileStatus.isFile());
 			log.info("是否为文件夹 => {}", locatedFileStatus.isDirectory());
 			log.info("--------------------------------");
+		}
+	}
+
+	/**
+	 * 实现 WordCount
+	 *
+	 * @throws IOException
+	 */
+	@Test
+	public void wordCount() throws IOException {
+		HashMap<String, Integer> wordCount = new HashMap<>();
+
+		try (
+			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fileSystem.open(new Path("/tmp/data.txt"))));
+			FSDataOutputStream fsDataOutputStream = fileSystem.create(new Path("/tmp/output_hdfs.txt"));
+		) {
+			// 读取HDFS文件数据
+			String str;
+			while ((str = bufferedReader.readLine()) != null) {
+				Arrays.stream(str.split(" ")).forEach(word -> {
+					if (wordCount.containsKey(word)) {
+						wordCount.put(word, wordCount.get(word) + 1);
+					} else {
+						wordCount.put(word, 1);
+					}
+				});
+			}
+
+			// 将统计的结果写入 HDFS 文件
+			wordCount.forEach((word, count) -> {
+				try {
+					fsDataOutputStream.write((word + ":" + count + "\r\n").getBytes(StandardCharsets.UTF_8));
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+			});
 		}
 	}
 
