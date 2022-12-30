@@ -24,12 +24,17 @@ public class MapReduce {
 	public static void main(String[] args) throws IOException, InterruptedException, ClassNotFoundException {
 		// 创建配置对象
 		Configuration conf = new Configuration();
+		// 如果客户端运行在 windows 下，需要配置改参数
+		// conf.set("mapreduce.app-submission.cross-platform", "true");
+
 		// 创建 Job 对象
 		Job job = Job.getInstance(conf);
 		// 指定 Job 主类
 		job.setJarByClass(MapReduce.class);
 		// 指定 Job 名称
 		job.setJobName("WordCount");
+		// 指定 Jar 包路径，在本机运行时设置
+		// job.setJar("wordcount.jar");
 
 		// 指定 Job 输入路径和输出路径
 		TextInputFormat.addInputPath(job, new Path("/tmp/data.txt"));
@@ -71,7 +76,7 @@ public class MapReduce {
 	 * Reducer<KEYIN,VALUEIN,KEYOUT,VALUEOUT>
 	 */
 	private static class WordCountReducer extends Reducer<Text, IntWritable, Text, IntWritable> {
-		
+
 		@Override
 		protected void reduce(Text key, Iterable<IntWritable> values, Reducer<Text, IntWritable, Text, IntWritable>.Context context) throws IOException, InterruptedException {
 			int sum = 0;
