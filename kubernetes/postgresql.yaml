@@ -1,4 +1,32 @@
 apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: postgres-pv
+  namespace: database
+spec:
+  accessModes: ['ReadWriteOnce']
+  capacity:
+    storage: 5Gi
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: postgres-pv
+  nfs:
+    server: master
+    path: /root/nfs/postgresql/data
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-pvc
+  namespace: database
+spec:
+  resources:
+    requests:
+      storage: 5Gi
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: postgres-pv
+---
+apiVersion: v1
 kind: ConfigMap
 metadata:
   name: postgres-config
@@ -51,8 +79,8 @@ spec:
           mountPath: /var/lib/postgresql/data
       volumes:
       - name: data
-        hostPath:
-          path: /opt/postgresql/data
+        persistentVolumeClaim:
+          claimName: postgres-pvc
 
 
 
