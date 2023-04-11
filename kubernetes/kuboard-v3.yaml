@@ -1,0 +1,154 @@
+---
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: kuboard
+
+---
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+  name: kuboard-admin
+  namespace: kuboard
+
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: kuboard-admin-crb
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+  - kind: ServiceAccount
+    name: kuboard-admin
+    namespace: kuboard
+
+---
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+  name: kuboard-viewer
+  namespace: kuboard
+
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: kuboard-viewer-crb
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: view
+subjects:
+  - kind: ServiceAccount
+    name: kuboard-viewer
+    namespace: kuboard
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kuboard-v3
+  namespace: kuboard
+  labels:
+    k8s.kuboard.cn/name: kuboard-v3
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kuboard-v3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        app: kuboard-v3
+        k8s.kuboard.cn/name: kuboard-v3
+    spec:
+      containers:
+      - name: kuboard-v3
+        image: swr.cn-east-2.myhuaweicloud.com/kuboard/kuboard:v3
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: KUBOARD_AGENT_SERVER_TCP_PORT
+          value: "10081"
+        volumeMounts:
+        - mountPath: /data
+          name: data
+        - mountPath: /init-etcd-scripts/import-cluster-once.yaml
+          name: import-cluster-yaml 
+        ports:
+        - name: web
+          containerPort: 80
+          protocol: TCP
+        - name: peer
+          containerPort: 10081
+          protocol: TCP
+        - name: peer-u
+          containerPort: 10081
+          protocol: UDP
+        livenessProbe:
+          httpGet:
+            port: 80
+            path: /kuboard-resources/version.json
+            scheme: HTTP
+          initialDelaySeconds: 30
+          timeoutSeconds: 1
+          periodSeconds: 10
+          successThreshold: 1
+          failureThreshold: 1
+        readinessProbe:
+          httpGet:
+            port: 80
+            path: /kuboard-resources/version.json
+            scheme: HTTP
+          initialDelaySeconds: 30
+          timeoutSeconds: 1
+          periodSeconds: 1
+          successThreshold: 1
+          failureThreshold: 3
+      volumes:
+      - name: data
+        hostPath:
+          path: '/root/var/kuboard'
+          type: DirectoryOrCreate
+      - name: import-cluster-yaml
+        hostPath:
+          path: '/root/var/kuboard/import-cluster-once.yaml'
+          type: DirectoryOrCreate
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        operator: Exists
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: kuboard-v3
+  namespace: kuboard
+  labels:
+    k8s.kuboard.cn/name: kuboard-v3
+spec:
+  selector:
+    app: kuboard-v3
+  type: NodePort
+  ports:
+  - name: web
+    port: 80
+    nodePort: 30180
+    protocol: TCP
+  - name: peer
+    port: 10081
+    nodePort: 30181
+    protocol: TCP
+  - name: peer-u
+    port: 10081
+    nodePort: 30181
+    protocol: UDP
