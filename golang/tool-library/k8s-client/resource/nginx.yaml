@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-pod
+spec:
+  containers:
+    - name: nginx-pod
+      image: nginx:stable-alpine3.17-slim
+      imagePullPolicy: IfNotPresent
+      livenessProbe:
+        httpGet:
+          port: 80
+          path: /index.html
+          scheme: HTTP
+        initialDelaySeconds: 5
+        timeoutSeconds: 2
+        periodSeconds: 5
+        successThreshold: 1
+        failureThreshold: 3
+      readinessProbe:
+        httpGet:
+          port: 80
+          path: /index.html
+          scheme: HTTP
+        initialDelaySeconds: 5
+        timeoutSeconds: 2
+        periodSeconds: 5
+        successThreshold: 1
+        failureThreshold: 3
