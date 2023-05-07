@@ -78,3 +78,63 @@ func (m *ReentrantMutex) Unlock() {
 	atomic.StoreInt64(&m.owner, -1)
 	m.Mutex.Unlock()
 }
+
+// Golang 原生的 Map 是并发不安全的，Sync.Map 保证并发安全
+func TestSyncMap(t *testing.T) {
+	var users sync.Map
+
+	// 存储数据
+	users.Store(10, "H_VK")
+	users.Store(20, "张三")
+	users.Store(30, "李四")
+	users.Store(40, "王五")
+	users.Store(50, "赵六")
+
+	// 读取数据
+	if value, ok := users.Load(10); ok {
+		t.Log(value.(string))
+	}
+
+	// 删除数据
+	if value, ok := users.LoadAndDelete(30); ok {
+		t.Log(value.(string))
+	}
+
+	// 遍历数据
+	users.Range(func(key, value any) bool {
+		t.Log(key, value.(string))
+		return true
+	})
+
+}
+
+// SyncPool 本质用途是增加临时资源的重用率，减少 GC 负担
+// 不适合存储带有状态的对象，因为获取的对象是随机的，并且缓存的对象释放策略完全是由 runtime 内部管理
+// 不适合需要控制缓存元素的个数
+func TestSyncPool(t *testing.T) {
+	// 记录对象创建次数
+	var createCount int32
+	pool := &sync.Pool{
+		New: func() interface{} {
+			atomic.AddInt32(&createCount, 1)
+			return make([]byte, 1024)
+		},
+	}
+
+	workerCount := 1024 * 1024
+	var wg sync.WaitGroup
+	wg.Add(workerCount)
+
+	for i := 0; i < workerCount; i++ {
+		go func() {
+			defer wg.Done()
+			// 申请 buffer 实例
+			buffer := pool.Get()
+			// 释放 buffer 实例
+			defer pool.Put(buffer)
+		}()
+	}
+
+	wg.Wait()
+	t.Logf("%d objects created", createCount)
+}
