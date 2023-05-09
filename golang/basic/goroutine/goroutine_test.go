@@ -2,9 +2,11 @@ package goroutine
 
 import (
 	"context"
+	"fmt"
 	"runtime"
 	"sync"
 	"testing"
+	"time"
 )
 
 /*
@@ -58,8 +60,8 @@ func TestCancelGoroutine(t *testing.T) {
 }
 
 /*
-	runtime.Gosched() 用于让出 CPU 时间片，让出当前 goroutine 的执行权限
-	调度器安排其他等待的任务运行，并在下次某个时候从该位置恢复运行，与 Java 中的 yield 类似
+runtime.Gosched() 用于让出 CPU 时间片，让出当前 goroutine 的执行权限
+调度器安排其他等待的任务运行，并在下次某个时候从该位置恢复运行，与 Java 中的 yield 类似
 */
 func TestRuntimeGosched(t *testing.T) {
 	go func() {
@@ -75,7 +77,7 @@ func TestRuntimeGosched(t *testing.T) {
 }
 
 /*
-	runtime.Goexit() 立即终止当前 goroutine 执行
+runtime.Goexit() 立即终止当前 goroutine 执行
 */
 func TestRuntimeGoexit(t *testing.T) {
 	var wg sync.WaitGroup
@@ -91,4 +93,78 @@ func TestRuntimeGoexit(t *testing.T) {
 		t.Log("A......")
 	}()
 	wg.Wait()
+}
+
+// ------------------------------ 并发模式 Pipeline ------------------------------
+
+// 生产配件
+func produce(n int) <-chan string {
+	out := make(chan string)
+	go func() {
+		defer close(out)
+		for i := 0; i < n; i++ {
+			out <- fmt.Sprint("配件", i)
+		}
+	}()
+	return out
+}
+
+// 组装配件
+func build(in <-chan string) <-chan string {
+	out := make(chan string)
+	go func() {
+		defer close(out)
+		for c := range in {
+			out <- "组装（" + c + "）"
+			time.Sleep(3 * time.Second)
+		}
+	}()
+	return out
+}
+
+// 打包配件
+func pack(in <-chan string) <-chan string {
+	out := make(chan string)
+	go func() {
+		defer close(out)
+		for c := range in {
+			out <- "打包（" + c + "）"
+		}
+	}()
+	return out
+}
+
+// 扇入函数（组件），把多个channel中的数据发送到一个channel中
+func merge(ins ...<-chan string) <-chan string {
+	var wg sync.WaitGroup
+	count := len(ins)
+	wg.Add(count)
+	out := make(chan string)
+
+	for _, channel := range ins {
+		go func(ch <-chan string) {
+			defer wg.Done()
+			for c := range ch {
+				out <- c
+			}
+		}(channel)
+	}
+
+	go func() {
+		wg.Wait()
+		close(out)
+	}()
+	return out
+}
+
+func TestPipeline(t *testing.T) {
+	produce := produce(100)
+	phone1 := build(produce)
+	phone2 := build(produce)
+	phone3 := build(produce)
+	p := pack(merge(phone1, phone2, phone3))
+
+	for result := range p {
+		t.Log(result)
+	}
 }
