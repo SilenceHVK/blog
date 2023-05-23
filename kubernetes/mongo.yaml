@@ -1,0 +1,108 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mongo-cm
+  namespace: database
+data:
+  MONGO_INITDB_ROOT_USERNAME: "root"
+  MONGO_INITDB_ROOT_PASSWORD: "123456"
+  ME_CONFIG_BASICAUTH_USERNAME: admin
+  ME_CONFIG_BASICAUTH_PASSWORD: admin
+  ME_CONFIG_MONGODB_URL: mongodb://root:123456@127.0.0.1:27017/
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mongo
+  namespace: database
+spec:
+  replicas: 1
+  serviceName: mongo
+  selector:
+    matchLabels:
+      app: mongo
+  template:
+    metadata:
+      labels:
+        app: mongo
+    spec:
+      containers:
+      - name: mongo
+        image: mongo:4.2.24
+        imagePullPolicy: IfNotPresent
+        volumeMounts:
+        - name: data
+          mountPath: /data
+        envFrom:
+        - configMapRef:
+            name: mongo-cm
+        ports:
+        - name: mongo
+          containerPort: 27017
+        livenessProbe:
+          tcpSocket:
+            port: 27017
+          initialDelaySeconds: 5
+          timeoutSeconds: 5
+          periodSeconds: 5
+          successThreshold: 1
+          failureThreshold: 3
+        readinessProbe:
+          tcpSocket:
+            port: 27017
+          initialDelaySeconds: 5
+          timeoutSeconds: 5
+          periodSeconds: 5
+          successThreshold: 1
+          failureThreshold: 3
+      - name: mongo-express
+        image: mongo-express:1.0.0-alpha.4
+        imagePullPolicy: IfNotPresent
+        envFrom:
+        - configMapRef:
+            name: mongo-cm
+        ports:
+        - name: mongo-express
+          containerPort: 8081
+        livenessProbe:
+          tcpSocket:
+            port: 8081
+          initialDelaySeconds: 5
+          timeoutSeconds: 5
+          periodSeconds: 5
+          successThreshold: 1
+          failureThreshold: 3
+        readinessProbe:
+          tcpSocket:
+            port: 8081
+          initialDelaySeconds: 5
+          timeoutSeconds: 5
+          periodSeconds: 5
+          successThreshold: 1
+          failureThreshold: 3
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes: ['ReadWriteOnce']
+      storageClassName: 'nfs-client'
+      resources:
+        requests:
+          storage: 2Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo
+  namespace: database
+spec:
+  selector:
+    app: mongo
+  type: NodePort
+  ports:
+  - name: mongo
+    port: 27017
+    nodePort: 30067
+  - name: mongo-express
+    port: 8081
+    nodePort: 30167
