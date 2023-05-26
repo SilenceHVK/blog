@@ -4,4 +4,10 @@ dependencies {
 	implementation 'io.netty:netty-all:4.1.75.Final'
 	implementation 'org.springframework:spring-aop:5.3.17'
 	implementation 'commons-net:commons-net:3.8.0'
+
+	// Validation 依赖
+	implementation 'javax.validation:validation-api:2.0.1.Final'
+	implementation 'org.hibernate.validator:hibernate-validator:6.2.0.Final'
+	implementation 'javax.el:javax.el-api:3.0.0'
+	implementation 'org.glassfish:javax.el:3.0.0'
 }
