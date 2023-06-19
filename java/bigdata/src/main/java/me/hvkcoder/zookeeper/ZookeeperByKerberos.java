@@ -1,4 +1,4 @@
-package me.hvkcoder;
+package me.hvkcoder.zookeeper;
 
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.WatchedEvent;

@@ -6,6 +6,8 @@ buildscript {
 		scalaVersion = '2.12'
 		sparkVersion = '3.2.1'
 		flinkVersion = '1.14.4'
+		zookeeperVersion = '3.8.1'
+		curatorVersion = '5.5.0'
 	}
 }
 
@@ -16,7 +18,19 @@ plugins {
 
 sourceCompatibility = 1.8
 
+configurations {
+	compile {
+		exclude group: 'org.apache.zookeeper', module: 'zookeeper'
+	}
+//	all*.exclude group: 'org.apache.zookeeper', module: 'zookeeper'
+}
+
 dependencies {
+	implementation "org.apache.curator:curator-framework:$curatorVersion"
+	implementation "org.apache.curator:curator-recipes:$curatorVersion"
+	implementation "org.apache.zookeeper:zookeeper:$zookeeperVersion"
+
+
 	implementation "org.apache.hadoop:hadoop-client:$hadoopVersion"
 	implementation "org.apache.hadoop:hadoop-hdfs:$hadoopVersion"
 
