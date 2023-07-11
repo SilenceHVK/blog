@@ -3,12 +3,17 @@ package me.hvkcoder.zookeeper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
+import org.apache.curator.framework.recipes.locks.InterProcessMutex;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.data.Stat;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author h_vk
@@ -56,9 +61,41 @@ public class CuratorTest {
 		log.info("{}", stat);
 	}
 
+	@Test
+	public void testInterProcessMutex() throws InterruptedException {
+		ExecutorService executor = Executors.newFixedThreadPool(10);
+		AtomicInteger count = new AtomicInteger();
+
+		// 创建互斥锁
+		InterProcessMutex mutex = new InterProcessMutex(curator, "/mutex");
+		for (int i = 0; i < 10; i++) {
+			executor.execute(() -> {
+				try {
+					// 获取互斥锁
+					mutex.acquire();
+					for (int j = 0; j < 10; j++) {
+						count.getAndIncrement();
+					}
+					Thread.sleep(1000);
+					log.info("count => {}", count);
+				} catch (Exception e) {
+					throw new RuntimeException(e);
+				} finally {
+					try {
+						// 释放互斥锁
+						mutex.release();
+					} catch (Exception e) {
+						throw new RuntimeException(e);
+					}
+				}
+			});
+		}
+		Thread.sleep(Integer.MAX_VALUE);
+	}
+
 	@After
 	public void close() {
 		curator.close();
 	}
-	
+
 }
