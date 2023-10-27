@@ -7,3 +7,19 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 	implementation 'org.apache.commons:commons-pool2'
 }
+
+
+jar {
+	archiveName("spring-practice.jar")
+	processResources {
+		exclude("*")
+	}
+	exclude("*.jar", "*.yml")
+	dependsOn(extractFile)
+	manifest {
+		attributes(
+			"Manifest-Version": "1.0",
+			'Main-Class': 'me.hvkcoder.spring.practice.PracticeApplication'
+		)
+	}
+}
