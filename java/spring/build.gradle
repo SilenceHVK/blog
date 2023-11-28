@@ -41,7 +41,7 @@ subprojects {
 
 	// 提取项目文件
 	task extractFile() {
-		def target = "$buildDir/target"
+		def target = "$buildDir/${project.name}"
 		delete "$buildDir"
 		doLast {
 			// 复制项目依赖的 Jar 包
@@ -64,7 +64,7 @@ subprojects {
 
 	// 将 jar 包打包至 lib 目录
 	tasks.withType(Jar) {
-		destinationDir(file("$buildDir/target/lib"))
+		destinationDir(file("$buildDir/${project.name}"))
 		doLast {
 			println "=================== ヾ(@^▽^@)ノ 项目打包完成 (*^▽^*) ==================="
 		}

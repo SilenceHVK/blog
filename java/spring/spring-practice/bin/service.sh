@@ -58,7 +58,7 @@ if [[ ! ${JAVA_OPTS} ]]; then
 fi
 
 # Set CLASS_PATH
-CLASS_PATH="$BASE_DIR/../lib/*:${SERVICE_CONF}:."
+CLASS_PATH="$BASE_DIR/../lib/*:${SERVICE_CONF}:./*"
 
 # get process pid
 get_process_pid() {
