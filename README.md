@@ -1,12 +1,5 @@
 # H-VK 技术文章
 
-感谢  [JetBrains](https://www.jetbrains.com/community/opensource/#support) 提供的开源授权支持
-
-Thanks to [JetBrains](https://www.jetbrains.com/community/opensource/#support) for open source licensing support
-
-![JetBrains Logo](https://resources.jetbrains.com/storage/products/company/brand/logos/jetbrains-training-partner.png)
-
-
 ## 文章分类
 
 - [Java](#user-content-java)
