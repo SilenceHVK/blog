@@ -9,7 +9,7 @@ ENV KAFKA_HOME="/opt/kafka" \
 
 
 RUN set -eux && \
-    sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories \
+    sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories && \
     apk add --no-cache bash perl openjdk8-jre-base tar wget && cd \opt &&\
     wget -t 10 --retry-connrefused -O "$TAR" "https://downloads.apache.org/kafka/${KAFKA_VERSION}/kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz" && \
     tar zxf "kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz" && \
