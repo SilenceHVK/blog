@@ -10,4 +10,8 @@ dependencies {
 	implementation 'org.hibernate.validator:hibernate-validator:6.2.0.Final'
 	implementation 'javax.el:javax.el-api:3.0.0'
 	implementation 'org.glassfish:javax.el:3.0.0'
+
+	// protobuf
+	implementation 'com.google.protobuf:protobuf-java:3.25.2'
+	implementation 'com.google.protobuf:protobuf-java-util:3.25.2'
 }

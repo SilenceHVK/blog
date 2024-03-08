@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package me.hvkcoder.java_basic.io.netty.protobuf.proto;
+option java_package = "me.hvkcoder.java_basic.io.netty.protobuf.proto";
+option java_outer_classname = "MessageDataProto";
+
+message MessageData {
+	enum DataType {
+		PersonType = 0;
+		StudentType = 1;
+	}
+	DataType data_type = 1;
+	oneof data_body {
+		Person person = 2;
+		Student student = 3;
+	}
+}
+
+message  Person {
+	int32 id = 1;
+	string name = 2;
+}
+
+message  Student {
+	int32 id = 1;
+	string name = 2;
+	string address = 3;
+}
