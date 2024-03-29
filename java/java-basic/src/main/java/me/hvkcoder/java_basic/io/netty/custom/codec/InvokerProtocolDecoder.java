@@ -16,8 +16,10 @@ public class InvokerProtocolDecoder extends ByteToMessageDecoder {
 	@Override
 	protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf, List<Object> list) throws Exception {
 		if (byteBuf.readableBytes() < 4) return;
+		byte[] data = new byte[byteBuf.readableBytes()];
+		byteBuf.readBytes(data);
 		try (
-			ObjectInputStream objectInputStream = new ObjectInputStream(new ByteArrayInputStream(byteBuf.array(), byteBuf.readerIndex(), byteBuf.readableBytes()));
+			ObjectInputStream objectInputStream = new ObjectInputStream(new ByteArrayInputStream(data));
 		) {
 			list.add(objectInputStream.readObject());
 			byteBuf.skipBytes(byteBuf.readableBytes());
