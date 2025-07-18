@@ -1,6 +1,6 @@
 module github.com/SilenceHVK/blog/golang/tool-library
 
-go 1.17
+go 1.23.0
 
 require (
 	github.com/Shopify/sarama v1.31.1
@@ -68,7 +68,7 @@ require (
 	go.opencensus.io v0.23.0 // indirect
 	golang.org/x/crypto v0.0.0-20220214200702-86341886e292 // indirect
 	golang.org/x/net v0.8.0 // indirect
-	golang.org/x/oauth2 v0.0.0-20220223155221-ee480838109b // indirect
+	golang.org/x/oauth2 v0.27.0 // indirect
 	golang.org/x/sys v0.6.0 // indirect
 	golang.org/x/term v0.6.0 // indirect
 	golang.org/x/text v0.8.0 // indirect
