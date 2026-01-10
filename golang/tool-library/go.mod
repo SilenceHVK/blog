@@ -5,7 +5,7 @@ go 1.17
 require (
 	github.com/Shopify/sarama v1.31.1
 	github.com/fsnotify/fsnotify v1.5.1
-	github.com/sirupsen/logrus v1.8.1
+	github.com/sirupsen/logrus v1.8.3
 	github.com/spf13/viper v1.10.1
 	k8s.io/api v0.27.1
 	k8s.io/apimachinery v0.27.1
